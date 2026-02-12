@@ -35,28 +35,46 @@ function renderTileChart(){
   const root = $('#tileChart');
   root.innerHTML = '';
 
-  const grid = el('div', { class: 'tileGrid', role:'grid' });
+  const stage = el('div', { class:'tileStage', role:'application', 'aria-label':'Vowel mouth diagram (tile map)' });
 
-  // Place tiles by (r,c). We'll fake positioning by setting grid-column/row.
+  // Map from vowel quadrilateral coords (520x360) into stage box.
+  const W = 520, H = 360;
+  const rect = stage.getBoundingClientRect();
+  // If not mounted yet, fall back to 1:1; actual positioning will be corrected on resize.
+  const sx = (rect.width || W) / W;
+  const sy = (rect.height || H) / H;
+
   for (const p of state.phonemes){
+    const wide = p.tile?.w===2 ? 92 : p.tile?.w===3 ? 140 : 44;
+    const baseH = 56;
+
+    // Prefer quad-based positioning so it forms a mouth/vowel-diagram shape.
+    let x = p.quad?.x ?? ((p.tile?.c || 1) * 44);
+    let y = p.quad?.y ?? ((p.tile?.r || 1) * 56);
+
+    // Center tiles on the point and nudge upward a bit.
+    const left = (x * sx) - (wide/2);
+    const top = (y * sy) - (baseH/2);
+
     const tile = el('div', {
       class: `tile ${p.tile?.w===2?'tile--wide':''} ${p.tile?.w===3?'tile--wide2':''}`,
-      role:'gridcell',
+      role:'button',
       tabindex:'0',
       'data-key': p.key,
-      style: `grid-column: ${p.tile?.c || 1} / span ${p.tile?.w || 1}; grid-row: ${p.tile?.r || 1};`
+      style: `left:${left.toFixed(2)}px; top:${top.toFixed(2)}px; height:${baseH}px; width:${wide}px;`
     },
       el('div', { class:'tile__top' }, p.display),
+      el('button', { class:'tile__play', type:'button', 'aria-label':`Play /${p.ipa}/`, onClick:(e)=>{ e.stopPropagation(); playPhoneme(p); } }, '▶'),
       el('div', { class:'tile__bot' },
         ...(state.showLabels ? (p.example||[]).slice(0,4).map(w => el('div', {}, w)) : [])
       )
     );
 
     wireInteractive(tile, p);
-    grid.appendChild(tile);
+    stage.appendChild(tile);
   }
 
-  root.appendChild(grid);
+  root.appendChild(stage);
 }
 
 function renderTable(){
@@ -140,6 +158,11 @@ async function playUrl(url){
   await a.play();
 }
 
+function playPhoneme(p){
+  const url = audioUrlForPhoneme(p);
+  return playUrl(url);
+}
+
 function playButton(label, url, enabled){
   const btn = el('button', { class:`play ${enabled ? '' : 'is-disabled'}`, type:'button', 'aria-label': label });
   btn.textContent = enabled ? `▶ ${label}` : `⏸ ${label}`;
@@ -214,11 +237,16 @@ function wireInteractive(node, p){
   node.addEventListener('mousemove', (e) => moveTooltip(e.clientX, e.clientY));
   node.addEventListener('focus', () => { setHover(p.key); showTooltip(node, p); });
   node.addEventListener('blur', () => { setHover(null); hideTooltip(); });
-  node.addEventListener('click', () => setSelected(p.key));
+  node.addEventListener('click', () => {
+    setSelected(p.key);
+    // If the user clicked, make it playable immediately.
+    playPhoneme(p).catch(()=>{});
+  });
   node.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       setSelected(p.key);
+      playPhoneme(p).catch(()=>{});
     }
   });
 }
@@ -308,8 +336,9 @@ async function load(){
 
   renderAll();
 
-  // Re-render quad on resize for scaling
+  // Re-render quad + tile chart on resize for scaling
   window.addEventListener('resize', () => {
+    renderTileChart();
     renderQuad();
     syncHighlights();
   });
