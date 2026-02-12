@@ -1,0 +1,316 @@
+{
+  "meta": {
+    "title": "General American vowels (chart-matched)",
+    "note": "Inventory + examples match the provided screenshot as closely as possible from the image. Audio is expected at site/audio/phonemes/<key>.mp3 and site/audio/words/<slug>.mp3"
+  },
+  "phonemes": [
+    {
+      "key": "i",
+      "ipa": "i",
+      "display": "i",
+      "example": ["be", "ski"],
+      "tongue": "high-front",
+      "lips": "unrounded",
+      "length": "long",
+      "type": "monophthong",
+      "rhotic": false,
+      "tile": {"c": 2, "r": 1, "w": 1},
+      "quad": {"x": 165, "y": 85}
+    },
+    {
+      "key": "ɪ",
+      "ipa": "ɪ",
+      "display": "ɪ",
+      "example": ["sit"],
+      "tongue": "high-front",
+      "lips": "unrounded",
+      "length": "short",
+      "type": "monophthong",
+      "rhotic": false,
+      "tile": {"c": 3, "r": 2, "w": 1},
+      "quad": {"x": 175, "y": 115}
+    },
+    {
+      "key": "ɪr",
+      "ipa": "ɪr",
+      "display": "ɪr",
+      "example": ["ear"],
+      "tongue": "high-front",
+      "lips": "unrounded",
+      "length": "r-colored",
+      "type": "r-colored",
+      "rhotic": true,
+      "tile": {"c": 3, "r": 3, "w": 1},
+      "quad": {"x": 210, "y": 135}
+    },
+
+    {
+      "key": "eɪ",
+      "ipa": "eɪ",
+      "display": "eɪ",
+      "example": ["day", "same"],
+      "tongue": "mid-front",
+      "lips": "unrounded",
+      "length": "long",
+      "type": "diphthong",
+      "rhotic": false,
+      "tile": {"c": 3, "r": 5, "w": 1},
+      "quad": {"x": 195, "y": 165}
+    },
+    {
+      "key": "ɛ",
+      "ipa": "ɛ",
+      "display": "ɛ",
+      "example": ["bed", "ten"],
+      "tongue": "mid-front",
+      "lips": "unrounded",
+      "length": "short",
+      "type": "monophthong",
+      "rhotic": false,
+      "tile": {"c": 4, "r": 6, "w": 1},
+      "quad": {"x": 190, "y": 205}
+    },
+    {
+      "key": "ɛr",
+      "ipa": "ɛr",
+      "display": "ɛr",
+      "example": ["care", "hair"],
+      "tongue": "mid-front",
+      "lips": "unrounded",
+      "length": "r-colored",
+      "type": "r-colored",
+      "rhotic": true,
+      "tile": {"c": 5, "r": 6, "w": 1},
+      "quad": {"x": 235, "y": 205}
+    },
+
+    {
+      "key": "ɝ",
+      "ipa": "ɝ",
+      "display": "ɝ",
+      "example": ["bird", "turn"],
+      "tongue": "central",
+      "lips": "unrounded",
+      "length": "r-colored",
+      "type": "r-colored",
+      "rhotic": true,
+      "tile": {"c": 8, "r": 3, "w": 1},
+      "quad": {"x": 275, "y": 140}
+    },
+    {
+      "key": "ɑ",
+      "ipa": "ɑ",
+      "display": "ɑ",
+      "example": ["water", "actor"],
+      "tongue": "low-central",
+      "lips": "unrounded",
+      "length": "short",
+      "type": "monophthong",
+      "rhotic": false,
+      "tile": {"c": 9, "r": 3, "w": 1},
+      "quad": {"x": 300, "y": 275}
+    },
+
+    {
+      "key": "u",
+      "ipa": "u",
+      "display": "u",
+      "example": ["shoe", "food", "sue", "tube"],
+      "tongue": "high-back",
+      "lips": "rounded",
+      "length": "long",
+      "type": "monophthong",
+      "rhotic": false,
+      "tile": {"c": 13, "r": 1, "w": 1},
+      "quad": {"x": 365, "y": 90}
+    },
+    {
+      "key": "ʊ",
+      "ipa": "ʊ",
+      "display": "ʊ",
+      "example": ["foot", "put", "look"],
+      "tongue": "high-back",
+      "lips": "rounded",
+      "length": "short",
+      "type": "monophthong",
+      "rhotic": false,
+      "tile": {"c": 14, "r": 2, "w": 1},
+      "quad": {"x": 360, "y": 120}
+    },
+    {
+      "key": "ʊr",
+      "ipa": "ʊr",
+      "display": "ʊr",
+      "example": ["tour"],
+      "tongue": "high-back",
+      "lips": "rounded",
+      "length": "r-colored",
+      "type": "r-colored",
+      "rhotic": true,
+      "tile": {"c": 15, "r": 2, "w": 1},
+      "quad": {"x": 390, "y": 140}
+    },
+
+    {
+      "key": "ʌ",
+      "ipa": "ʌ",
+      "display": "ʌ",
+      "example": ["sun", "blood"],
+      "tongue": "mid-central",
+      "lips": "unrounded",
+      "length": "short",
+      "type": "monophthong",
+      "rhotic": false,
+      "tile": {"c": 10, "r": 6, "w": 1},
+      "quad": {"x": 275, "y": 215}
+    },
+    {
+      "key": "ə",
+      "ipa": "ə",
+      "display": "ə",
+      "example": ["ago", "the"],
+      "tongue": "mid-central",
+      "lips": "unrounded",
+      "length": "reduced",
+      "type": "schwa",
+      "rhotic": false,
+      "tile": {"c": 11, "r": 6, "w": 1},
+      "quad": {"x": 305, "y": 215}
+    },
+
+    {
+      "key": "oʊ",
+      "ipa": "oʊ",
+      "display": "oʊ",
+      "example": ["no", "don't"],
+      "tongue": "mid-back",
+      "lips": "rounded",
+      "length": "long",
+      "type": "diphthong",
+      "rhotic": false,
+      "tile": {"c": 12, "r": 6, "w": 1},
+      "quad": {"x": 355, "y": 185}
+    },
+    {
+      "key": "ɔ",
+      "ipa": "ɔ",
+      "display": "ɔ",
+      "example": ["dog", "law"],
+      "tongue": "mid-back",
+      "lips": "rounded",
+      "length": "short",
+      "type": "monophthong",
+      "rhotic": false,
+      "tile": {"c": 14, "r": 7, "w": 1},
+      "quad": {"x": 350, "y": 210}
+    },
+    {
+      "key": "ɔr",
+      "ipa": "ɔr",
+      "display": "ɔr",
+      "example": ["warm", "form"],
+      "tongue": "mid-back",
+      "lips": "rounded",
+      "length": "r-colored",
+      "type": "r-colored",
+      "rhotic": true,
+      "tile": {"c": 15, "r": 7, "w": 1},
+      "quad": {"x": 390, "y": 225}
+    },
+
+    {
+      "key": "æ",
+      "ipa": "æ",
+      "display": "æ",
+      "example": ["hat", "man", "ash"],
+      "tongue": "low-front",
+      "lips": "unrounded",
+      "length": "short",
+      "type": "monophthong",
+      "rhotic": false,
+      "tile": {"c": 10, "r": 9, "w": 1},
+      "quad": {"x": 220, "y": 260}
+    },
+
+    {
+      "key": "aʊ",
+      "ipa": "aʊ",
+      "display": "aʊ",
+      "example": ["cow", "hour"],
+      "tongue": "low-front→back",
+      "lips": "rounding",
+      "length": "long",
+      "type": "diphthong",
+      "rhotic": false,
+      "tile": {"c": 11, "r": 10, "w": 1},
+      "quad": {"x": 285, "y": 290}
+    },
+    {
+      "key": "aʊr",
+      "ipa": "aʊr",
+      "display": "aʊr",
+      "example": ["hour"],
+      "tongue": "diphthong+r",
+      "lips": "rounding",
+      "length": "r-colored",
+      "type": "r-colored",
+      "rhotic": true,
+      "tile": {"c": 11, "r": 11, "w": 1},
+      "quad": {"x": 310, "y": 305}
+    },
+
+    {
+      "key": "aɪ",
+      "ipa": "aɪ",
+      "display": "aɪ",
+      "example": ["sky"],
+      "tongue": "low-front→high-front",
+      "lips": "unrounded",
+      "length": "long",
+      "type": "diphthong",
+      "rhotic": false,
+      "tile": {"c": 12, "r": 10, "w": 1},
+      "quad": {"x": 255, "y": 290}
+    },
+    {
+      "key": "aɪr",
+      "ipa": "aɪr",
+      "display": "aɪr",
+      "example": ["wire", "air"],
+      "tongue": "diphthong+r",
+      "lips": "unrounded",
+      "length": "r-colored",
+      "type": "r-colored",
+      "rhotic": true,
+      "tile": {"c": 12, "r": 11, "w": 1},
+      "quad": {"x": 275, "y": 305}
+    },
+
+    {
+      "key": "ɑ2",
+      "ipa": "ɑ",
+      "display": "ɑ",
+      "example": ["top", "spa"],
+      "tongue": "low-back",
+      "lips": "unrounded",
+      "length": "short",
+      "type": "monophthong",
+      "rhotic": false,
+      "tile": {"c": 14, "r": 10, "w": 1},
+      "quad": {"x": 335, "y": 280}
+    },
+    {
+      "key": "ɑr",
+      "ipa": "ɑr",
+      "display": "ɑr",
+      "example": ["hard", "arm"],
+      "tongue": "low-back",
+      "lips": "unrounded",
+      "length": "r-colored",
+      "type": "r-colored",
+      "rhotic": true,
+      "tile": {"c": 15, "r": 10, "w": 1},
+      "quad": {"x": 390, "y": 280}
+    }
+  ]
+}

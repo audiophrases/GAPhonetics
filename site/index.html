@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>General American Phonetics — Interactive Charts</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand__title">General American Phonetics</div>
+      <div class="brand__subtitle">Interactive vowel charts + reference table</div>
+    </div>
+
+    <div class="controls" aria-label="Controls">
+      <label class="control">
+        <span>Search</span>
+        <input id="search" type="search" placeholder="/æ/  cat  bird  oʊ" autocomplete="off" />
+      </label>
+      <label class="control checkbox">
+        <input id="toggleLabels" type="checkbox" checked />
+        <span>Show labels</span>
+      </label>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- CHART 1: tile map (black background, like the screenshot) -->
+    <section class="panel panel--dark" aria-labelledby="h-tiles">
+      <div class="panel__head">
+        <h2 id="h-tiles">Vowel map (tiles)</h2>
+        <div class="panel__hint">Hover or click a tile. Selection syncs across all charts.</div>
+      </div>
+      <div class="tileChart" id="tileChart" role="application" aria-label="Interactive tile vowel chart"></div>
+    </section>
+
+    <!-- CHART 2: table (symbol/example/tongue/lips/length) -->
+    <section class="panel" aria-labelledby="h-table">
+      <div class="panel__head">
+        <h2 id="h-table">Reference table</h2>
+        <div class="panel__hint">Click a row to select the phoneme.</div>
+      </div>
+      <div class="tableWrap" role="region" aria-label="Phoneme reference table">
+        <table class="refTable" id="refTable">
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Example</th>
+              <th>Tongue</th>
+              <th>Lips</th>
+              <th>Length</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CHART 3: vowel quadrilateral (front/central/back x high/mid/low) -->
+    <section class="panel" aria-labelledby="h-quad">
+      <div class="panel__head">
+        <h2 id="h-quad">Vowel quadrilateral</h2>
+        <div class="panel__hint">Hover dots; click to lock selection.</div>
+      </div>
+
+      <div class="quad" id="quad" role="application" aria-label="Interactive vowel quadrilateral">
+        <svg class="quad__svg" viewBox="0 0 520 360" aria-hidden="true">
+          <!-- Frame (stylized like typical vowel quadrilateral) -->
+          <path d="M 90 40 L 420 40 L 360 300 L 150 300 Z" fill="#fff" stroke="#222" stroke-width="2" />
+
+          <!-- Horizontal guides -->
+          <line x1="105" y1="120" x2="410" y2="120" stroke="#bbb" stroke-width="2" />
+          <line x1="120" y1="200" x2="395" y2="200" stroke="#bbb" stroke-width="2" />
+
+          <!-- Vertical-ish guides -->
+          <line x1="220" y1="40" x2="205" y2="300" stroke="#bbb" stroke-width="2" />
+          <line x1="320" y1="40" x2="300" y2="300" stroke="#bbb" stroke-width="2" />
+
+          <!-- Labels -->
+          <text x="80" y="30" class="quad__label">High</text>
+          <text x="70" y="130" class="quad__label">Mid</text>
+          <text x="75" y="310" class="quad__label">Low</text>
+
+          <text x="155" y="25" class="quad__label">Front</text>
+          <text x="250" y="25" class="quad__label">Central</text>
+          <text x="350" y="25" class="quad__label">Back</text>
+        </svg>
+
+        <div class="quad__points" id="quadPoints" aria-label="Vowel points"></div>
+      </div>
+    </section>
+
+    <!-- SIDE: details card -->
+    <aside class="panel panel--sticky" aria-labelledby="h-details">
+      <div class="panel__head">
+        <h2 id="h-details">Phoneme</h2>
+        <div class="panel__hint">Selected item details.</div>
+      </div>
+
+      <div class="card" id="details">
+        <div class="card__empty">Select a vowel to see details.</div>
+      </div>
+
+      <div class="legend">
+        <div class="legend__row"><span class="swatch swatch--sel"></span> selected</div>
+        <div class="legend__row"><span class="swatch swatch--hover"></span> hover</div>
+      </div>
+    </aside>
+
+    <footer class="footer">
+      <div>Data is editable in <code>data/phonemes.json</code>. Add audio files under <code>audio/</code> to enable playback.</div>
+    </footer>
+  </main>
+
+  <div class="tooltip" id="tooltip" role="tooltip" aria-hidden="true"></div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
