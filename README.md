@@ -14,6 +14,13 @@ Open:
 
 - http://localhost:5173/site/
 
+## Live (GitHub Pages)
+
+This repo includes a GitHub Actions workflow that deploys `./site` to GitHub Pages on every push to `main`.
+After the first deploy, the site will be available at:
+
+- https://audiophrases.github.io/GAPhonetics/
+
 ## Project structure
 
 - `site/` — static website (HTML/CSS/JS)
