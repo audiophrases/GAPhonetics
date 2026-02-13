@@ -60,83 +60,22 @@ function renderTileChart(){
   const sx = (rect.width || W) / W;
   const sy = (rect.height || H) / H;
 
-  const items = [];
-
+  // Markers: keep every item at its exact (x,y) on the vowel diagram.
+  // To avoid overlap while preserving correctness, we keep markers small and show details in the side card + tooltip.
   for (const p of state.phonemes){
-    const wide = p.tile?.w===2 ? 92 : p.tile?.w===3 ? 140 : 44;
-    const baseH = 56;
-
-    // Prefer quad-based positioning so it forms a mouth/vowel-diagram shape.
     const x = p.quad?.x ?? ((p.tile?.c || 1) * 44);
     const y = p.quad?.y ?? ((p.tile?.r || 1) * 56);
 
-    const desiredLeft = (x * sx) - (wide/2);
-    const desiredTop  = (y * sy) - (baseH/2);
-
-    const tile = el('div', {
-      class: `tile ${p.tile?.w===2?'tile--wide':''} ${p.tile?.w===3?'tile--wide2':''}`,
+    const mk = el('div', {
+      class:'marker',
       role:'button',
       tabindex:'0',
       'data-key': p.key,
-      style: `left:${desiredLeft.toFixed(2)}px; top:${desiredTop.toFixed(2)}px; height:${baseH}px; width:${wide}px;`
-    },
-      el('div', { class:'tile__top' }, p.display),
-      el('button', { class:'tile__play', type:'button', 'aria-label':`Play /${p.ipa}/`, onClick:(e)=>{ e.stopPropagation(); playPhoneme(p).catch(()=>{}); } }, '▶'),
-      el('div', { class:'tile__bot' },
-        ...(state.showLabels ? (p.example||[]).slice(0,4).map(w => el('div', {}, w)) : [])
-      )
-    );
+      style: `left:${(x*sx).toFixed(2)}px; top:${(y*sy).toFixed(2)}px;`
+    }, state.showLabels ? p.display : '•');
 
-    wireInteractive(tile, p);
-    stage.appendChild(tile);
-    items.push({ p, tile, w: wide, h: baseH, desiredLeft, desiredTop });
-  }
-
-  // Collision avoidance for better UX (simple packing).
-  // Strategy: place from top to bottom; if overlap detected, nudge downward / sideways.
-  const PAD = 6;
-  const placed = [];
-
-  function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
-  function rectFor(left, top, w, h){ return { left, top, right:left+w, bottom:top+h, w, h }; }
-  function overlaps(a, b){
-    return !(a.right + PAD <= b.left || a.left >= b.right + PAD || a.bottom + PAD <= b.top || a.top >= b.bottom + PAD);
-  }
-
-  items.sort((a,b) => (a.desiredTop - b.desiredTop) || (a.desiredLeft - b.desiredLeft));
-
-  const stageW = rect.width || W;
-  const stageH = rect.height || H;
-
-  for (const it of items){
-    let left = it.desiredLeft;
-    let top = it.desiredTop;
-
-    // keep inside bounds initially
-    left = clamp(left, 0, Math.max(0, stageW - it.w));
-    top  = clamp(top,  0, Math.max(0, stageH - it.h));
-
-    let r = rectFor(left, top, it.w, it.h);
-    let tries = 0;
-    while (placed.some(o => overlaps(r, o)) && tries < 160){
-      // alternate side nudges while trending downward
-      const stepY = 6;
-      const stepX = 8;
-      top = clamp(top + stepY, 0, Math.max(0, stageH - it.h));
-      const dir = (tries % 2 === 0) ? 1 : -1;
-      left = clamp(left + dir * stepX, 0, Math.max(0, stageW - it.w));
-      r = rectFor(left, top, it.w, it.h);
-      tries++;
-      // if we're stuck at bottom, try scanning horizontally
-      if (top >= stageH - it.h && tries % 20 === 0){
-        left = clamp((tries * 13) % Math.max(1, stageW - it.w), 0, Math.max(0, stageW - it.w));
-        r = rectFor(left, top, it.w, it.h);
-      }
-    }
-
-    it.tile.style.left = `${left.toFixed(2)}px`;
-    it.tile.style.top  = `${top.toFixed(2)}px`;
-    placed.push(r);
+    wireInteractive(mk, p);
+    stage.appendChild(mk);
   }
 }
 
@@ -378,10 +317,9 @@ async function load(){
 
   renderAll();
 
-  // Re-render quad + tile chart on resize for scaling
+  // Re-render chart on resize for scaling
   window.addEventListener('resize', () => {
     renderTileChart();
-    renderQuad();
     syncHighlights();
   });
 
