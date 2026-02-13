@@ -35,7 +35,23 @@ function renderTileChart(){
   const root = $('#tileChart');
   root.innerHTML = '';
 
-  const stage = el('div', { class:'tileStage', role:'application', 'aria-label':'Vowel mouth diagram (tile map)' });
+  const stage = el('div', { class:'tileStage', role:'application', 'aria-label':'Interactive vowel chart (quadrilateral + markers)' });
+
+  // Add quadrilateral SVG as the background so this is one merged chart.
+  stage.appendChild(el('svg', { class:'stageSvg', viewBox:'0 0 520 360', 'aria-hidden':'true' },
+    el('path', { d:'M 90 40 L 420 40 L 360 300 L 150 300 Z', fill:'none', stroke:'rgba(255,255,255,.92)', 'stroke-width':'2' }),
+    el('line', { x1:'105', y1:'120', x2:'410', y2:'120', stroke:'rgba(255,255,255,.35)', 'stroke-width':'2' }),
+    el('line', { x1:'120', y1:'200', x2:'395', y2:'200', stroke:'rgba(255,255,255,.35)', 'stroke-width':'2' }),
+    el('line', { x1:'220', y1:'40',  x2:'205', y2:'300', stroke:'rgba(255,255,255,.28)', 'stroke-width':'2' }),
+    el('line', { x1:'320', y1:'40',  x2:'300', y2:'300', stroke:'rgba(255,255,255,.28)', 'stroke-width':'2' }),
+    el('text', { x:'80',  y:'30',  class:'quad__label' }, 'High'),
+    el('text', { x:'70',  y:'130', class:'quad__label' }, 'Mid'),
+    el('text', { x:'75',  y:'310', class:'quad__label' }, 'Low'),
+    el('text', { x:'155', y:'25',  class:'quad__label' }, 'Front'),
+    el('text', { x:'250', y:'25',  class:'quad__label' }, 'Central'),
+    el('text', { x:'350', y:'25',  class:'quad__label' }, 'Back')
+  ));
+
   root.appendChild(stage);
 
   // Map from vowel quadrilateral coords (520x360) into stage box.
@@ -144,28 +160,7 @@ function renderTable(){
 }
 
 function renderQuad(){
-  const root = $('#quadPoints');
-  root.innerHTML = '';
-
-  // Coordinates are in SVG viewBox space; we map to the overlay div.
-  // Overlay div is same aspect as 520x360 by CSS (via fixed height), so we can scale.
-  const W = 520, H = 360;
-
-  const rect = root.getBoundingClientRect();
-  const sx = rect.width / W;
-  const sy = rect.height / H;
-
-  for (const p of state.phonemes){
-    if (!p.quad) continue;
-    const pt = el('div', {
-      class:'point',
-      'data-key': p.key,
-      style: `left:${(p.quad.x*sx).toFixed(2)}px; top:${(p.quad.y*sy).toFixed(2)}px;`
-    }, state.showLabels ? p.display : '•');
-
-    wireInteractive(pt, p);
-    root.appendChild(pt);
-  }
+  // Quadrilateral is merged into the main chart now.
 }
 
 function slugWord(w){
