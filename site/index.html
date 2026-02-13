@@ -57,39 +57,7 @@
       </div>
     </section>
 
-    <!-- CHART 3: vowel quadrilateral (front/central/back x high/mid/low) -->
-    <section class="panel" aria-labelledby="h-quad">
-      <div class="panel__head">
-        <h2 id="h-quad">Vowel quadrilateral</h2>
-        <div class="panel__hint">Hover dots; click to lock selection.</div>
-      </div>
-
-      <div class="quad" id="quad" role="application" aria-label="Interactive vowel quadrilateral">
-        <svg class="quad__svg" viewBox="0 0 520 360" aria-hidden="true">
-          <!-- Frame (stylized like typical vowel quadrilateral) -->
-          <path d="M 90 40 L 420 40 L 360 300 L 150 300 Z" fill="#fff" stroke="#222" stroke-width="2" />
-
-          <!-- Horizontal guides -->
-          <line x1="105" y1="120" x2="410" y2="120" stroke="#bbb" stroke-width="2" />
-          <line x1="120" y1="200" x2="395" y2="200" stroke="#bbb" stroke-width="2" />
-
-          <!-- Vertical-ish guides -->
-          <line x1="220" y1="40" x2="205" y2="300" stroke="#bbb" stroke-width="2" />
-          <line x1="320" y1="40" x2="300" y2="300" stroke="#bbb" stroke-width="2" />
-
-          <!-- Labels -->
-          <text x="80" y="30" class="quad__label">High</text>
-          <text x="70" y="130" class="quad__label">Mid</text>
-          <text x="75" y="310" class="quad__label">Low</text>
-
-          <text x="155" y="25" class="quad__label">Front</text>
-          <text x="250" y="25" class="quad__label">Central</text>
-          <text x="350" y="25" class="quad__label">Back</text>
-        </svg>
-
-        <div class="quad__points" id="quadPoints" aria-label="Vowel points"></div>
-      </div>
-    </section>
+    <!-- CHART 3 removed: quadrilateral is now merged into the main interactive chart above -->
 
     <!-- SIDE: details card -->
     <aside class="panel panel--sticky" aria-labelledby="h-details">

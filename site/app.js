@@ -35,7 +35,23 @@ function renderTileChart(){
   const root = $('#tileChart');
   root.innerHTML = '';
 
-  const stage = el('div', { class:'tileStage', role:'application', 'aria-label':'Vowel mouth diagram (tile map)' });
+  const stage = el('div', { class:'tileStage', role:'application', 'aria-label':'Interactive vowel chart (quadrilateral + markers)' });
+
+  // Add quadrilateral SVG as the background so this is one merged chart.
+  stage.appendChild(el('svg', { class:'stageSvg', viewBox:'0 0 520 360', 'aria-hidden':'true' },
+    el('path', { d:'M 90 40 L 420 40 L 360 300 L 150 300 Z', fill:'none', stroke:'rgba(255,255,255,.92)', 'stroke-width':'2' }),
+    el('line', { x1:'105', y1:'120', x2:'410', y2:'120', stroke:'rgba(255,255,255,.35)', 'stroke-width':'2' }),
+    el('line', { x1:'120', y1:'200', x2:'395', y2:'200', stroke:'rgba(255,255,255,.35)', 'stroke-width':'2' }),
+    el('line', { x1:'220', y1:'40',  x2:'205', y2:'300', stroke:'rgba(255,255,255,.28)', 'stroke-width':'2' }),
+    el('line', { x1:'320', y1:'40',  x2:'300', y2:'300', stroke:'rgba(255,255,255,.28)', 'stroke-width':'2' }),
+    el('text', { x:'80',  y:'30',  class:'quad__label' }, 'High'),
+    el('text', { x:'70',  y:'130', class:'quad__label' }, 'Mid'),
+    el('text', { x:'75',  y:'310', class:'quad__label' }, 'Low'),
+    el('text', { x:'155', y:'25',  class:'quad__label' }, 'Front'),
+    el('text', { x:'250', y:'25',  class:'quad__label' }, 'Central'),
+    el('text', { x:'350', y:'25',  class:'quad__label' }, 'Back')
+  ));
+
   root.appendChild(stage);
 
   // Map from vowel quadrilateral coords (520x360) into stage box.
@@ -44,83 +60,22 @@ function renderTileChart(){
   const sx = (rect.width || W) / W;
   const sy = (rect.height || H) / H;
 
-  const items = [];
-
+  // Markers: keep every item at its exact (x,y) on the vowel diagram.
+  // To avoid overlap while preserving correctness, we keep markers small and show details in the side card + tooltip.
   for (const p of state.phonemes){
-    const wide = p.tile?.w===2 ? 92 : p.tile?.w===3 ? 140 : 44;
-    const baseH = 56;
-
-    // Prefer quad-based positioning so it forms a mouth/vowel-diagram shape.
     const x = p.quad?.x ?? ((p.tile?.c || 1) * 44);
     const y = p.quad?.y ?? ((p.tile?.r || 1) * 56);
 
-    const desiredLeft = (x * sx) - (wide/2);
-    const desiredTop  = (y * sy) - (baseH/2);
-
-    const tile = el('div', {
-      class: `tile ${p.tile?.w===2?'tile--wide':''} ${p.tile?.w===3?'tile--wide2':''}`,
+    const mk = el('div', {
+      class:'marker',
       role:'button',
       tabindex:'0',
       'data-key': p.key,
-      style: `left:${desiredLeft.toFixed(2)}px; top:${desiredTop.toFixed(2)}px; height:${baseH}px; width:${wide}px;`
-    },
-      el('div', { class:'tile__top' }, p.display),
-      el('button', { class:'tile__play', type:'button', 'aria-label':`Play /${p.ipa}/`, onClick:(e)=>{ e.stopPropagation(); playPhoneme(p).catch(()=>{}); } }, '▶'),
-      el('div', { class:'tile__bot' },
-        ...(state.showLabels ? (p.example||[]).slice(0,4).map(w => el('div', {}, w)) : [])
-      )
-    );
+      style: `left:${(x*sx).toFixed(2)}px; top:${(y*sy).toFixed(2)}px;`
+    }, state.showLabels ? p.display : '•');
 
-    wireInteractive(tile, p);
-    stage.appendChild(tile);
-    items.push({ p, tile, w: wide, h: baseH, desiredLeft, desiredTop });
-  }
-
-  // Collision avoidance for better UX (simple packing).
-  // Strategy: place from top to bottom; if overlap detected, nudge downward / sideways.
-  const PAD = 6;
-  const placed = [];
-
-  function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
-  function rectFor(left, top, w, h){ return { left, top, right:left+w, bottom:top+h, w, h }; }
-  function overlaps(a, b){
-    return !(a.right + PAD <= b.left || a.left >= b.right + PAD || a.bottom + PAD <= b.top || a.top >= b.bottom + PAD);
-  }
-
-  items.sort((a,b) => (a.desiredTop - b.desiredTop) || (a.desiredLeft - b.desiredLeft));
-
-  const stageW = rect.width || W;
-  const stageH = rect.height || H;
-
-  for (const it of items){
-    let left = it.desiredLeft;
-    let top = it.desiredTop;
-
-    // keep inside bounds initially
-    left = clamp(left, 0, Math.max(0, stageW - it.w));
-    top  = clamp(top,  0, Math.max(0, stageH - it.h));
-
-    let r = rectFor(left, top, it.w, it.h);
-    let tries = 0;
-    while (placed.some(o => overlaps(r, o)) && tries < 160){
-      // alternate side nudges while trending downward
-      const stepY = 6;
-      const stepX = 8;
-      top = clamp(top + stepY, 0, Math.max(0, stageH - it.h));
-      const dir = (tries % 2 === 0) ? 1 : -1;
-      left = clamp(left + dir * stepX, 0, Math.max(0, stageW - it.w));
-      r = rectFor(left, top, it.w, it.h);
-      tries++;
-      // if we're stuck at bottom, try scanning horizontally
-      if (top >= stageH - it.h && tries % 20 === 0){
-        left = clamp((tries * 13) % Math.max(1, stageW - it.w), 0, Math.max(0, stageW - it.w));
-        r = rectFor(left, top, it.w, it.h);
-      }
-    }
-
-    it.tile.style.left = `${left.toFixed(2)}px`;
-    it.tile.style.top  = `${top.toFixed(2)}px`;
-    placed.push(r);
+    wireInteractive(mk, p);
+    stage.appendChild(mk);
   }
 }
 
@@ -144,28 +99,7 @@ function renderTable(){
 }
 
 function renderQuad(){
-  const root = $('#quadPoints');
-  root.innerHTML = '';
-
-  // Coordinates are in SVG viewBox space; we map to the overlay div.
-  // Overlay div is same aspect as 520x360 by CSS (via fixed height), so we can scale.
-  const W = 520, H = 360;
-
-  const rect = root.getBoundingClientRect();
-  const sx = rect.width / W;
-  const sy = rect.height / H;
-
-  for (const p of state.phonemes){
-    if (!p.quad) continue;
-    const pt = el('div', {
-      class:'point',
-      'data-key': p.key,
-      style: `left:${(p.quad.x*sx).toFixed(2)}px; top:${(p.quad.y*sy).toFixed(2)}px;`
-    }, state.showLabels ? p.display : '•');
-
-    wireInteractive(pt, p);
-    root.appendChild(pt);
-  }
+  // Quadrilateral is merged into the main chart now.
 }
 
 function slugWord(w){
@@ -383,10 +317,9 @@ async function load(){
 
   renderAll();
 
-  // Re-render quad + tile chart on resize for scaling
+  // Re-render chart on resize for scaling
   window.addEventListener('resize', () => {
     renderTileChart();
-    renderQuad();
     syncHighlights();
   });
 

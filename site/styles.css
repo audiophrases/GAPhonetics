@@ -110,7 +110,7 @@ body{
     linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
   background-size: 52px 45px;
-  opacity:.35;
+  opacity:.18;
   pointer-events:none;
 }
 
@@ -128,6 +128,17 @@ body{
   display:flex;
   flex-direction:column;
 }
+
+/* Background quad inside the stage */
+.stageSvg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  opacity:.92;
+}
+.stageSvg path, .stageSvg line{opacity:.85}
 .tile__top{
   background: var(--tileTop);
   padding:4px 6px;
@@ -183,26 +194,25 @@ body{
 .refTable tbody tr.is-selected{background: rgba(34,197,94,.13)}
 .refTable code{font-family:var(--mono)}
 
-/* Quad */
-.quad{padding:14px}
+/* Quad (merged into tile stage as an SVG background) */
 .quad__svg{width:100%; height:auto; display:block}
-.quad__label{font: 700 13px var(--sans); fill:#111}
-.quad__points{position:relative; margin-top:-360px; height:360px}
-.point{
+.quad__label{font: 700 13px var(--sans); fill:#fff; opacity:.9}
+
+.marker{
   position:absolute;
   transform: translate(-50%, -50%);
   cursor:pointer;
   user-select:none;
   font-family: var(--mono);
-  font-weight:800;
+  font-weight:900;
   font-size:14px;
   color:#111;
   padding:4px 6px;
   background:#fff;
   border:2px solid #111;
 }
-.point.is-hover{outline:3px solid rgba(96,165,250,.85)}
-.point.is-selected{outline:3px solid rgba(34,197,94,.9)}
+.marker.is-hover{outline:3px solid rgba(96,165,250,.85)}
+.marker.is-selected{outline:3px solid rgba(34,197,94,.9)}
 
 /* Details */
 .card{padding:14px}
