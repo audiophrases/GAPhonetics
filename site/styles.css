@@ -134,10 +134,9 @@ body{
   inset:0;
   width:100%;
   height:100%;
-  pointer-events:none;
-  opacity:.92;
 }
-.stageSvg path, .stageSvg line{opacity:.85}
+.stageSvg .guide{pointer-events:none}
+.stageSvg path, .stageSvg line{opacity:.92}
 .tile__top{
   background: var(--tileTop);
   padding:4px 6px;
@@ -195,23 +194,45 @@ body{
 
 /* Quad (merged into tile stage as an SVG background) */
 .quad__svg{width:100%; height:auto; display:block}
-.quad__label{font: 700 13px var(--sans); fill:#fff; opacity:.9}
-
-.marker{
-  position:absolute;
-  transform: translate(-50%, -50%);
-  cursor:pointer;
-  user-select:none;
-  font-family: var(--mono);
-  font-weight:900;
-  font-size:14px;
-  color:#111;
-  padding:4px 6px;
-  background:#fff;
-  border:2px solid #111;
+.quad__label{
+  font: 700 13px var(--sans);
+  fill:#111827;
+  opacity:.78;
+  pointer-events:none;
 }
-.marker.is-hover{outline:3px solid rgba(96,165,250,.85)}
-.marker.is-selected{outline:3px solid rgba(34,197,94,.9)}
+
+.vowel-node{cursor:pointer; outline:none}
+.vowel-node__dot{
+  fill:#ffffff;
+  stroke:var(--marker);
+  stroke-width:1.8;
+}
+.vowel-node__ipa{
+  font-family: var(--mono);
+  font-weight:800;
+  font-size:12px;
+  text-anchor:middle;
+  dominant-baseline:middle;
+  fill:var(--marker);
+  pointer-events:none;
+}
+.vowel-node__word{
+  font-family: var(--sans);
+  font-weight:600;
+  font-size:10px;
+  text-anchor:middle;
+  fill:#4b5563;
+  pointer-events:none;
+}
+.vowel-node.is-hover .vowel-node__dot{
+  stroke:var(--markerHover);
+  stroke-width:3;
+}
+.vowel-node.is-selected .vowel-node__dot{
+  stroke:var(--markerSel);
+  stroke-width:3;
+  fill:#ecfdf5;
+}
 
 /* Details */
 .card{padding:14px}

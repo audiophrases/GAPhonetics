@@ -31,52 +31,87 @@ function el(tag, attrs={}, ...children){
   return node;
 }
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+function svgEl(tag, attrs={}, ...children){
+  const node = document.createElementNS(SVG_NS, tag);
+  for (const [k,v] of Object.entries(attrs||{})){
+    if (k === 'class') node.setAttribute('class', v);
+    else if (k.startsWith('on') && typeof v === 'function') node.addEventListener(k.slice(2), v);
+    else if (v === true) node.setAttribute(k, '');
+    else if (v !== false && v != null) node.setAttribute(k, String(v));
+  }
+  for (const ch of children.flat()){
+    if (ch == null) continue;
+    node.appendChild(typeof ch === 'string' ? document.createTextNode(ch) : ch);
+  }
+  return node;
+}
+
 function renderTileChart(){
   const root = $('#tileChart');
   root.innerHTML = '';
 
   const stage = el('div', { class:'tileStage', role:'application', 'aria-label':'Interactive vowel chart (quadrilateral + markers)' });
+  const svg = svgEl('svg', { class:'stageSvg', viewBox:'0 0 520 360', 'aria-label':'Vowel quadrilateral diagram' });
 
-  // Add quadrilateral SVG as the background so this is one merged chart.
-  stage.appendChild(el('svg', { class:'stageSvg', viewBox:'0 0 520 360', 'aria-hidden':'true' },
-    el('path', { d:'M 90 40 L 420 40 L 360 300 L 150 300 Z', fill:'none', stroke:'rgba(255,255,255,.92)', 'stroke-width':'2' }),
-    el('line', { x1:'105', y1:'120', x2:'410', y2:'120', stroke:'rgba(255,255,255,.35)', 'stroke-width':'2' }),
-    el('line', { x1:'120', y1:'200', x2:'395', y2:'200', stroke:'rgba(255,255,255,.35)', 'stroke-width':'2' }),
-    el('line', { x1:'220', y1:'40',  x2:'205', y2:'300', stroke:'rgba(255,255,255,.28)', 'stroke-width':'2' }),
-    el('line', { x1:'320', y1:'40',  x2:'300', y2:'300', stroke:'rgba(255,255,255,.28)', 'stroke-width':'2' }),
-    el('text', { x:'80',  y:'30',  class:'quad__label' }, 'High'),
-    el('text', { x:'70',  y:'130', class:'quad__label' }, 'Mid'),
-    el('text', { x:'75',  y:'310', class:'quad__label' }, 'Low'),
-    el('text', { x:'155', y:'25',  class:'quad__label' }, 'Front'),
-    el('text', { x:'250', y:'25',  class:'quad__label' }, 'Central'),
-    el('text', { x:'350', y:'25',  class:'quad__label' }, 'Back')
-  ));
+  svg.appendChild(svgEl('path', {
+    class: 'guide',
+    d:'M 90 40 L 420 40 L 360 300 L 150 300 Z',
+    fill:'none',
+    stroke:'rgba(17,24,39,.85)',
+    'stroke-width':'2.25'
+  }));
 
-  root.appendChild(stage);
+  [
+    ['105','120','410','120'],
+    ['120','200','395','200'],
+    ['220','40','205','300'],
+    ['320','40','300','300']
+  ].forEach(([x1,y1,x2,y2]) => {
+    svg.appendChild(svgEl('line', {
+      class: 'guide',
+      x1, y1, x2, y2,
+      stroke:'rgba(75,85,99,.35)',
+      'stroke-width':'1.7'
+    }));
+  });
 
-  // Map from vowel quadrilateral coords (520x360) into stage box.
-  const W = 520, H = 360;
-  const rect = stage.getBoundingClientRect();
-  const sx = (rect.width || W) / W;
-  const sy = (rect.height || H) / H;
+  [
+    ['78', '30', 'Close'],
+    ['78', '130', 'Mid'],
+    ['78', '312', 'Open'],
+    ['155', '24', 'Front'],
+    ['250', '24', 'Central'],
+    ['350', '24', 'Back']
+  ].forEach(([x,y,t]) => svg.appendChild(svgEl('text', { x, y, class:'quad__label' }, t)));
 
-  // Markers: keep every item at its exact (x,y) on the vowel diagram.
-  // To avoid overlap while preserving correctness, we keep markers small and show details in the side card + tooltip.
   for (const p of state.phonemes){
     const x = p.quad?.x ?? ((p.tile?.c || 1) * 44);
     const y = p.quad?.y ?? ((p.tile?.r || 1) * 56);
 
-    const mk = el('div', {
-      class:'marker',
+    const node = svgEl('g', {
+      class:'vowel-node',
       role:'button',
       tabindex:'0',
-      'data-key': p.key,
-      style: `left:${(x*sx).toFixed(2)}px; top:${(y*sy).toFixed(2)}px;`
-    }, state.showLabels ? p.display : '•');
+      transform:`translate(${x} ${y})`,
+      'data-key': p.key
+    });
 
-    wireInteractive(mk, p);
-    stage.appendChild(mk);
+    node.appendChild(svgEl('circle', { class:'vowel-node__dot', cx:'0', cy:'0', r:'13' }));
+
+    if (state.showLabels) {
+      node.appendChild(svgEl('text', { class:'vowel-node__ipa', x:'0', y:'1.5' }, p.display || p.ipa));
+      if ((p.example || []).length) {
+        node.appendChild(svgEl('text', { class:'vowel-node__word', x:'0', y:'25' }, p.example[0]));
+      }
+    }
+
+    wireInteractive(node, p);
+    svg.appendChild(node);
   }
+
+  stage.appendChild(svg);
+  root.appendChild(stage);
 }
 
 function renderTable(){
@@ -118,25 +153,58 @@ function audioUrlForWord(w){
   return `./audio/words/${encodeURIComponent(slugWord(w))}.mp3`;
 }
 
-async function canFetch(url){
-  try{
-    const r = await fetch(url, { method:'HEAD' });
-    return r.ok;
-  } catch { return false; }
+const audioCache = new Map();
+let activeAudio = null;
+
+function getAudioClip(url){
+  let clip = audioCache.get(url);
+  if (!clip){
+    clip = new Audio(url);
+    clip.preload = 'auto';
+    clip.load();
+    audioCache.set(url, clip);
+  }
+  return clip;
 }
 
-let audio;
-function ensureAudio(){
-  if (!audio) audio = new Audio();
-  return audio;
+function primeAudio(url){
+  try { getAudioClip(url); } catch {}
+}
+
+function waitForReady(audioEl, timeoutMs = 1200){
+  if (audioEl.readyState >= 2) return Promise.resolve();
+
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      audioEl.removeEventListener('loadeddata', finish);
+      audioEl.removeEventListener('canplay', finish);
+      audioEl.removeEventListener('canplaythrough', finish);
+      resolve();
+    };
+
+    audioEl.addEventListener('loadeddata', finish, { once: true });
+    audioEl.addEventListener('canplay', finish, { once: true });
+    audioEl.addEventListener('canplaythrough', finish, { once: true });
+    setTimeout(finish, timeoutMs);
+  });
 }
 
 async function playUrl(url){
-  const a = ensureAudio();
-  a.pause();
-  a.currentTime = 0;
-  a.src = url;
-  await a.play();
+  const clip = getAudioClip(url);
+
+  if (activeAudio && activeAudio !== clip){
+    activeAudio.pause();
+    activeAudio.currentTime = 0;
+  }
+
+  await waitForReady(clip);
+  clip.pause();
+  clip.currentTime = 0;
+  activeAudio = clip;
+  await clip.play();
 }
 
 function playPhoneme(p){
@@ -148,6 +216,9 @@ function playButton(label, url, enabled){
   const btn = el('button', { class:`play ${enabled ? '' : 'is-disabled'}`, type:'button', 'aria-label': label });
   btn.textContent = enabled ? `▶ ${label}` : `⏸ ${label}`;
   if (!enabled) btn.disabled = true;
+
+  btn.addEventListener('pointerenter', () => primeAudio(url), { once: true });
+  btn.addEventListener('focus', () => primeAudio(url), { once: true });
   btn.addEventListener('click', async () => {
     try{ await playUrl(url); }
     catch(err){ console.warn('Audio play failed', err); }
@@ -155,7 +226,7 @@ function playButton(label, url, enabled){
   return btn;
 }
 
-async function renderDetails(){
+function renderDetails(){
   const root = $('#details');
   const p = state.selected ? state.byKey.get(state.selected) : null;
 
@@ -166,10 +237,9 @@ async function renderDetails(){
 
   const examples = (p.example||[]);
   const phonemeAudio = audioUrlForPhoneme(p);
-  const phonemeHas = await canFetch(phonemeAudio);
 
-  // Pre-check word audio existence (first few to avoid hammering)
-  const wordChecks = await Promise.all(examples.slice(0,6).map(async w => [w, audioUrlForWord(w), await canFetch(audioUrlForWord(w))]));
+  primeAudio(phonemeAudio);
+  examples.slice(0, 6).forEach((w) => primeAudio(audioUrlForWord(w)));
 
   root.innerHTML = '';
   root.appendChild(el('div', { class:'card__sym' }, `/${p.ipa}/`));
@@ -189,7 +259,7 @@ async function renderDetails(){
   root.appendChild(el('div', { class:'card__section' },
     el('h3', {}, 'Audio'),
     el('div', { class:'playRow' },
-      playButton(`/${p.ipa}/`, phonemeAudio, phonemeHas)
+      playButton(`/${p.ipa}/`, phonemeAudio, true)
     )
   ));
 
@@ -198,13 +268,11 @@ async function renderDetails(){
     examples.length
       ? el('ul', { class:'card__list' },
           ...examples.map(w => {
-            const found = wordChecks.find(x => x[0]===w);
-            const url = found ? found[1] : audioUrlForWord(w);
-            const ok = found ? found[2] : false;
+            const url = audioUrlForWord(w);
             return el('li', {},
               el('span', { class:'exWord' }, w),
               ' ',
-              playButton(w, url, ok)
+              playButton(w, url, true)
             );
           })
         )
@@ -235,8 +303,13 @@ function wireInteractive(node, p){
 function setSelected(key){
   state.selected = key;
   syncHighlights();
-  // async renderDetails()
   renderDetails();
+
+  const p = state.byKey.get(key);
+  if (p) {
+    primeAudio(audioUrlForPhoneme(p));
+    (p.example || []).slice(0, 4).forEach((w) => primeAudio(audioUrlForWord(w)));
+  }
 }
 
 function setHover(key){
