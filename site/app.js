@@ -34,6 +34,9 @@ const DIAGRAM = {
   }
 };
 
+// Per-phoneme fine adjustments are stored in data/phonemes.json as slot.dx/slot.dy.
+
+
 function lerp(a, b, t){
   return a + (b - a) * t;
 }
@@ -61,9 +64,38 @@ function slotToPoint(slot = {}){
   };
 }
 
+function slotFromTongueLabel(tongue = '') {
+  const raw = normalizeTongueLabel(tongue);
+  if (!raw) return null;
+
+  const base = raw.split('→')[0].replace('+r', '').trim();
+
+  if (base.startsWith('high-front')) return { row: 'high', col: 'front' };
+  if (base.startsWith('high-back')) return { row: 'high', col: 'back' };
+  if (base.startsWith('mid-front')) return { row: 'mid', col: 'front' };
+  if (base.startsWith('mid-back')) return { row: 'mid', col: 'backCentral' };
+  if (base.startsWith('mid-central') || base === 'central') return { row: 'mid', col: 'central' };
+  if (base.startsWith('low-front')) return { row: 'nearOpen', col: 'front' };
+  if (base.startsWith('low-back')) return { row: 'nearOpen', col: 'backCentral' };
+  if (base.startsWith('low-central')) return { row: 'nearOpen', col: 'central' };
+
+  return null;
+}
+
 function resolveNodePosition(p){
+  const tongueSlot = slotFromTongueLabel(p.tongue);
+  if (tongueSlot) {
+    const fromData = p.slot || {};
+    return slotToPoint({
+      ...tongueSlot,
+      dx: fromData.dx || 0,
+      dy: fromData.dy || 0
+    });
+  }
+
   if (p.slot?.row && p.slot?.col) return slotToPoint(p.slot);
   if (p.quad?.x != null && p.quad?.y != null) return p.quad;
+
   return {
     x: (p.tile?.c || 1) * 44,
     y: (p.tile?.r || 1) * 56
@@ -120,6 +152,61 @@ function normalizeQuery(q){
     .toLowerCase()
     .replace(/^\//,'')
     .replace(/\/$/,'');
+}
+
+function normalizeTongueLabel(tongue = '') {
+  return String(tongue || '')
+    .toLowerCase()
+    .trim()
+    .replace(/â†’|->/g, '→');
+}
+
+function isDiphthongLike(p = {}) {
+  const t = normalizeTongueLabel(p.tongue || '');
+  return t.includes('→') || String(p.type || '').toLowerCase().includes('diphthong');
+}
+
+const SEGMENT_KEY_PREFS = {
+  'high-front': ['ɪ', 'i'],
+  'mid-front': ['ɛ'],
+  'high-back': ['ʊ', 'u'],
+  'mid-back': ['ɔ'],
+  'mid-central': ['ə', 'ʌ'],
+  'low-front': ['æ'],
+  'low-back': ['ɑ2', 'ɑ'],
+  'low-central': ['ɑ']
+};
+
+function canonicalMonophthongForSegment(segment) {
+  const prefs = SEGMENT_KEY_PREFS[segment] || [];
+
+  for (const key of prefs) {
+    const p = state.byKey.get(key);
+    if (p && !isDiphthongLike(p)) return key;
+  }
+
+  for (const p of state.phonemes) {
+    if (isDiphthongLike(p)) continue;
+    const base = normalizeTongueLabel(p.tongue).split('→')[0].replace('+r', '').trim();
+    if (base === segment) return p.key;
+  }
+
+  return null;
+}
+
+function relatedMonophthongKeys(key) {
+  const p = state.byKey.get(key);
+  if (!p || !isDiphthongLike(p)) return [];
+
+  const normalized = normalizeTongueLabel(p.tongue).replace(/\+r/g, '');
+  if (!normalized.includes('→')) return [];
+
+  const segments = normalized.split('→').map((s) => s.trim()).filter(Boolean);
+  const keys = segments
+    .map((seg) => canonicalMonophthongForSegment(seg))
+    .filter(Boolean);
+
+  return [...new Set(keys)];
 }
 
 function el(tag, attrs={}, ...children){
@@ -182,7 +269,9 @@ function renderTileChart(){
     ['350', '24', 'Back']
   ].forEach(([x,y,t]) => svg.appendChild(svgEl('text', { x, y, class:'quad__label' }, t)));
 
-  for (const p of state.phonemes){
+  const chartPhonemes = state.phonemes.filter((p) => !isDiphthongLike(p));
+
+  for (const p of chartPhonemes){
     const { x, y } = resolveNodePosition(p);
 
     const node = svgEl('g', {
@@ -337,9 +426,13 @@ function renderDetails(){
   root.innerHTML = '';
   root.appendChild(el('div', { class:'card__sym' }, `/${p.ipa}/`));
 
+  const typeDisplay = isDiphthongLike(p)
+    ? (p.tongue || p.type)
+    : (p.type || '—');
+
   root.appendChild(el('div', { class:'card__row' },
     el('span', { class:'badge' }, 'IPA ', el('code', {}, p.ipa)),
-    el('span', { class:'badge' }, 'Type ', el('code', {}, p.type || '—')),
+    el('span', { class:'badge' }, 'Type ', el('code', {}, typeDisplay)),
     el('span', { class:'badge' }, 'Rhotic ', el('code', {}, String(!!p.rhotic)))
   ));
 
@@ -411,14 +504,24 @@ function setHover(key){
 }
 
 function syncHighlights(){
-  // Tiles
-  document.querySelectorAll('[data-key]').forEach(node => {
+  const selectedLinked = new Set(state.selected ? relatedMonophthongKeys(state.selected) : []);
+  const hoverLinked = new Set(state.hover ? relatedMonophthongKeys(state.hover) : []);
+
+  // Diagram nodes
+  document.querySelectorAll('.stageSvg [data-key]').forEach(node => {
     const k = node.getAttribute('data-key');
-    node.classList.toggle('is-hover', !!state.hover && state.hover === k);
-    node.classList.toggle('is-selected', !!state.selected && state.selected === k);
+
+    const isDirectHover = !!state.hover && state.hover === k;
+    const isLinkedHover = !isDirectHover && hoverLinked.has(k);
+
+    const isDirectSelected = !!state.selected && state.selected === k;
+    const isLinkedSelected = !isDirectSelected && selectedLinked.has(k);
+
+    node.classList.toggle('is-hover', isDirectHover || isLinkedHover);
+    node.classList.toggle('is-selected', isDirectSelected || isLinkedSelected);
   });
 
-  // Table rows need a slightly different selector
+  // Table rows
   document.querySelectorAll('#refTable tbody tr').forEach(tr => {
     const k = tr.getAttribute('data-key');
     tr.classList.toggle('is-selected', !!state.selected && state.selected === k);

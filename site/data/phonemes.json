@@ -28,7 +28,9 @@
       },
       "slot": {
         "row": "high",
-        "col": "front"
+        "col": "front",
+        "dx": 27,
+        "dy": 11
       }
     },
     {
@@ -53,8 +55,10 @@
         "y": 104
       },
       "slot": {
-        "row": "nearHigh",
-        "col": "front"
+        "row": "high",
+        "col": "front",
+        "dx": 51,
+        "dy": 43
       }
     },
     {
@@ -64,7 +68,7 @@
       "example": [
         "ear"
       ],
-      "tongue": "high-front",
+      "tongue": "high-front+r",
       "lips": "unrounded",
       "length": "r-colored",
       "type": "r-colored",
@@ -79,10 +83,10 @@
         "y": 122
       },
       "slot": {
-        "row": "upperMid",
-        "col": "frontCentral",
-        "dx": 6,
-        "dy": -4
+        "row": "high",
+        "col": "front",
+        "dx": 81,
+        "dy": 61
       }
     },
     {
@@ -93,7 +97,7 @@
         "day",
         "same"
       ],
-      "tongue": "mid-front",
+      "tongue": "mid-front→high-front",
       "lips": "unrounded",
       "length": "long",
       "type": "diphthong",
@@ -108,8 +112,10 @@
         "y": 154
       },
       "slot": {
-        "row": "upperMid",
-        "col": "front"
+        "row": "mid",
+        "col": "front",
+        "dx": 52,
+        "dy": -16
       }
     },
     {
@@ -136,7 +142,9 @@
       },
       "slot": {
         "row": "mid",
-        "col": "front"
+        "col": "front",
+        "dx": 53,
+        "dy": 24
       }
     },
     {
@@ -147,7 +155,7 @@
         "care",
         "hair"
       ],
-      "tongue": "mid-front",
+      "tongue": "mid-front+r",
       "lips": "unrounded",
       "length": "r-colored",
       "type": "r-colored",
@@ -163,8 +171,9 @@
       },
       "slot": {
         "row": "mid",
-        "col": "frontCentral",
-        "dx": 10
+        "col": "front",
+        "dx": 90,
+        "dy": 18
       }
     },
     {
@@ -176,7 +185,7 @@
         "turn",
         "work"
       ],
-      "tongue": "central",
+      "tongue": "mid-central",
       "lips": "unrounded",
       "length": "r-colored",
       "type": "r-colored",
@@ -193,7 +202,8 @@
       "slot": {
         "row": "mid",
         "col": "central",
-        "dy": -12
+        "dx": 20,
+        "dy": 0
       }
     },
     {
@@ -221,7 +231,8 @@
       "slot": {
         "row": "nearOpen",
         "col": "central",
-        "dx": -6
+        "dx": 27,
+        "dy": 32
       }
     },
     {
@@ -250,7 +261,9 @@
       },
       "slot": {
         "row": "high",
-        "col": "back"
+        "col": "back",
+        "dx": 10,
+        "dy": 25
       }
     },
     {
@@ -277,8 +290,10 @@
         "y": 118
       },
       "slot": {
-        "row": "nearHigh",
-        "col": "back"
+        "row": "high",
+        "col": "back",
+        "dx": -10,
+        "dy": 57
       }
     },
     {
@@ -288,7 +303,7 @@
       "example": [
         "tour"
       ],
-      "tongue": "high-back",
+      "tongue": "high-back+r",
       "lips": "rounded",
       "length": "r-colored",
       "type": "r-colored",
@@ -303,9 +318,10 @@
         "y": 132
       },
       "slot": {
-        "row": "upperMid",
+        "row": "high",
         "col": "back",
-        "dx": 8
+        "dx": 16,
+        "dy": 71
       }
     },
     {
@@ -331,10 +347,10 @@
         "y": 226
       },
       "slot": {
-        "row": "lowerMid",
-        "col": "frontCentral",
-        "dx": -10,
-        "dy": 8
+        "row": "mid",
+        "col": "central",
+        "dx": 19,
+        "dy": 56
       }
     },
     {
@@ -360,10 +376,10 @@
         "y": 198
       },
       "slot": {
-        "row": "lowerMid",
+        "row": "mid",
         "col": "central",
-        "dx": 22,
-        "dy": 4
+        "dx": 31,
+        "dy": 28
       }
     },
     {
@@ -374,7 +390,7 @@
         "no",
         "don't"
       ],
-      "tongue": "mid-back",
+      "tongue": "mid-back→high-back",
       "lips": "rounded",
       "length": "long",
       "type": "diphthong",
@@ -389,8 +405,10 @@
         "y": 170
       },
       "slot": {
-        "row": "upperMid",
-        "col": "backCentral"
+        "row": "mid",
+        "col": "backCentral",
+        "dx": 42,
+        "dy": 0
       }
     },
     {
@@ -417,7 +435,9 @@
       },
       "slot": {
         "row": "mid",
-        "col": "backCentral"
+        "col": "backCentral",
+        "dx": 36,
+        "dy": 40
       }
     },
     {
@@ -428,7 +448,7 @@
         "warm",
         "form"
       ],
-      "tongue": "mid-back",
+      "tongue": "mid-back+r",
       "lips": "rounded",
       "length": "r-colored",
       "type": "r-colored",
@@ -443,9 +463,10 @@
         "y": 223
       },
       "slot": {
-        "row": "lowerMid",
-        "col": "back",
-        "dx": 6
+        "row": "mid",
+        "col": "backCentral",
+        "dx": 78,
+        "dy": 53
       }
     },
     {
@@ -473,7 +494,9 @@
       },
       "slot": {
         "row": "nearOpen",
-        "col": "front"
+        "col": "front",
+        "dx": 56,
+        "dy": 14
       }
     },
     {
@@ -484,7 +507,7 @@
         "cow",
         "hour"
       ],
-      "tongue": "low-front→back",
+      "tongue": "low-front→high-back",
       "lips": "rounding",
       "length": "long",
       "type": "diphthong",
@@ -500,9 +523,9 @@
       },
       "slot": {
         "row": "nearOpen",
-        "col": "backCentral",
-        "dx": -18,
-        "dy": 24
+        "col": "front",
+        "dx": 146,
+        "dy": 60
       }
     },
     {
@@ -512,7 +535,7 @@
       "example": [
         "hour"
       ],
-      "tongue": "diphthong+r",
+      "tongue": "low-front→high-back+r",
       "lips": "rounding",
       "length": "r-colored",
       "type": "r-colored",
@@ -527,10 +550,10 @@
         "y": 312
       },
       "slot": {
-        "row": "open",
-        "col": "back",
-        "dx": -26,
-        "dy": 12
+        "row": "nearOpen",
+        "col": "front",
+        "dx": 172,
+        "dy": 74
       }
     },
     {
@@ -556,9 +579,9 @@
       },
       "slot": {
         "row": "nearOpen",
-        "col": "central",
-        "dx": -20,
-        "dy": 24
+        "col": "front",
+        "dx": 91,
+        "dy": 44
       }
     },
     {
@@ -569,7 +592,7 @@
         "wire",
         "air"
       ],
-      "tongue": "diphthong+r",
+      "tongue": "low-front→high-front+r",
       "lips": "unrounded",
       "length": "r-colored",
       "type": "r-colored",
@@ -584,10 +607,10 @@
         "y": 312
       },
       "slot": {
-        "row": "open",
-        "col": "central",
-        "dx": -36,
-        "dy": 8
+        "row": "nearOpen",
+        "col": "front",
+        "dx": 106,
+        "dy": 74
       }
     },
     {
@@ -615,7 +638,8 @@
       "slot": {
         "row": "nearOpen",
         "col": "backCentral",
-        "dx": 22
+        "dx": 34,
+        "dy": 40
       }
     },
     {
@@ -626,7 +650,7 @@
         "hard",
         "arm"
       ],
-      "tongue": "low-back",
+      "tongue": "low-back+r",
       "lips": "unrounded",
       "length": "r-colored",
       "type": "r-colored",
@@ -641,9 +665,10 @@
         "y": 284
       },
       "slot": {
-        "row": "open",
-        "col": "back",
-        "dx": 10
+        "row": "nearOpen",
+        "col": "backCentral",
+        "dx": 88,
+        "dy": 46
       }
     }
   ]
