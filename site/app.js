@@ -97,13 +97,10 @@ function renderTileChart(){
       'data-key': p.key
     });
 
-    node.appendChild(svgEl('circle', { class:'vowel-node__dot', cx:'0', cy:'0', r:'13' }));
+    node.appendChild(svgEl('circle', { class:'vowel-node__dot', cx:'0', cy:'0', r:'11' }));
 
     if (state.showLabels) {
       node.appendChild(svgEl('text', { class:'vowel-node__ipa', x:'0', y:'1.5' }, p.display || p.ipa));
-      if ((p.example || []).length) {
-        node.appendChild(svgEl('text', { class:'vowel-node__word', x:'0', y:'25' }, p.example[0]));
-      }
     }
 
     wireInteractive(node, p);
