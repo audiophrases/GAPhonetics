@@ -8,6 +8,112 @@ const state = {
   showLabels: true,
 };
 
+const DIAGRAM = {
+  viewBox: { w: 520, h: 360 },
+  quad: {
+    tl: { x: 90, y: 40 },
+    tr: { x: 420, y: 40 },
+    br: { x: 360, y: 300 },
+    bl: { x: 150, y: 300 }
+  },
+  rows: {
+    high: 0.08,
+    nearHigh: 0.2,
+    upperMid: 0.35,
+    mid: 0.5,
+    lowerMid: 0.62,
+    nearOpen: 0.76,
+    open: 0.9
+  },
+  cols: {
+    front: 0.12,
+    frontCentral: 0.3,
+    central: 0.5,
+    backCentral: 0.68,
+    back: 0.86
+  }
+};
+
+function lerp(a, b, t){
+  return a + (b - a) * t;
+}
+
+function pointOnEdges(t){
+  const left = {
+    x: lerp(DIAGRAM.quad.tl.x, DIAGRAM.quad.bl.x, t),
+    y: lerp(DIAGRAM.quad.tl.y, DIAGRAM.quad.bl.y, t)
+  };
+  const right = {
+    x: lerp(DIAGRAM.quad.tr.x, DIAGRAM.quad.br.x, t),
+    y: lerp(DIAGRAM.quad.tr.y, DIAGRAM.quad.br.y, t)
+  };
+  return { left, right };
+}
+
+function slotToPoint(slot = {}){
+  const t = DIAGRAM.rows[slot.row] ?? 0.5;
+  const u = DIAGRAM.cols[slot.col] ?? 0.5;
+  const { left, right } = pointOnEdges(t);
+
+  return {
+    x: lerp(left.x, right.x, u) + (slot.dx || 0),
+    y: lerp(left.y, right.y, u) + (slot.dy || 0)
+  };
+}
+
+function resolveNodePosition(p){
+  if (p.slot?.row && p.slot?.col) return slotToPoint(p.slot);
+  if (p.quad?.x != null && p.quad?.y != null) return p.quad;
+  return {
+    x: (p.tile?.c || 1) * 44,
+    y: (p.tile?.r || 1) * 56
+  };
+}
+
+function drawSlotGrid(svg){
+  for (const t of Object.values(DIAGRAM.rows)) {
+    const { left, right } = pointOnEdges(t);
+    svg.appendChild(svgEl('line', {
+      class: 'slot-grid-line',
+      x1: left.x,
+      y1: left.y,
+      x2: right.x,
+      y2: right.y
+    }));
+  }
+
+  for (const u of Object.values(DIAGRAM.cols)) {
+    const top = {
+      x: lerp(DIAGRAM.quad.tl.x, DIAGRAM.quad.tr.x, u),
+      y: lerp(DIAGRAM.quad.tl.y, DIAGRAM.quad.tr.y, u)
+    };
+    const bot = {
+      x: lerp(DIAGRAM.quad.bl.x, DIAGRAM.quad.br.x, u),
+      y: lerp(DIAGRAM.quad.bl.y, DIAGRAM.quad.br.y, u)
+    };
+
+    svg.appendChild(svgEl('line', {
+      class: 'slot-grid-line',
+      x1: top.x,
+      y1: top.y,
+      x2: bot.x,
+      y2: bot.y
+    }));
+  }
+
+  for (const t of Object.values(DIAGRAM.rows)) {
+    for (const u of Object.values(DIAGRAM.cols)) {
+      const { left, right } = pointOnEdges(t);
+      svg.appendChild(svgEl('circle', {
+        class: 'slot-grid-dot',
+        cx: lerp(left.x, right.x, u),
+        cy: lerp(left.y, right.y, u),
+        r: 1.9
+      }));
+    }
+  }
+}
+
 function normalizeQuery(q){
   return (q||"")
     .trim()
@@ -52,29 +158,20 @@ function renderTileChart(){
   root.innerHTML = '';
 
   const stage = el('div', { class:'tileStage', role:'application', 'aria-label':'Interactive vowel chart (quadrilateral + markers)' });
-  const svg = svgEl('svg', { class:'stageSvg', viewBox:'0 0 520 360', 'aria-label':'Vowel quadrilateral diagram' });
+  const { w, h } = DIAGRAM.viewBox;
+  const { tl, tr, br, bl } = DIAGRAM.quad;
+
+  const svg = svgEl('svg', { class:'stageSvg', viewBox:`0 0 ${w} ${h}`, 'aria-label':'Vowel quadrilateral diagram' });
 
   svg.appendChild(svgEl('path', {
     class: 'guide',
-    d:'M 90 40 L 420 40 L 360 300 L 150 300 Z',
+    d:`M ${tl.x} ${tl.y} L ${tr.x} ${tr.y} L ${br.x} ${br.y} L ${bl.x} ${bl.y} Z`,
     fill:'none',
     stroke:'rgba(17,24,39,.85)',
     'stroke-width':'2.25'
   }));
 
-  [
-    ['105','120','410','120'],
-    ['120','200','395','200'],
-    ['220','40','205','300'],
-    ['320','40','300','300']
-  ].forEach(([x1,y1,x2,y2]) => {
-    svg.appendChild(svgEl('line', {
-      class: 'guide',
-      x1, y1, x2, y2,
-      stroke:'rgba(75,85,99,.35)',
-      'stroke-width':'1.7'
-    }));
-  });
+  drawSlotGrid(svg);
 
   [
     ['78', '30', 'High'],
@@ -86,8 +183,7 @@ function renderTileChart(){
   ].forEach(([x,y,t]) => svg.appendChild(svgEl('text', { x, y, class:'quad__label' }, t)));
 
   for (const p of state.phonemes){
-    const x = p.quad?.x ?? ((p.tile?.c || 1) * 44);
-    const y = p.quad?.y ?? ((p.tile?.r || 1) * 56);
+    const { x, y } = resolveNodePosition(p);
 
     const node = svgEl('g', {
       class:'vowel-node',

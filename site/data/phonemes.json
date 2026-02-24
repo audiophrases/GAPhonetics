@@ -25,6 +25,10 @@
       "quad": {
         "x": 160,
         "y": 72
+      },
+      "slot": {
+        "row": "high",
+        "col": "front"
       }
     },
     {
@@ -47,6 +51,10 @@
       "quad": {
         "x": 184,
         "y": 104
+      },
+      "slot": {
+        "row": "nearHigh",
+        "col": "front"
       }
     },
     {
@@ -69,6 +77,12 @@
       "quad": {
         "x": 214,
         "y": 122
+      },
+      "slot": {
+        "row": "upperMid",
+        "col": "frontCentral",
+        "dx": 6,
+        "dy": -4
       }
     },
     {
@@ -92,6 +106,10 @@
       "quad": {
         "x": 204,
         "y": 154
+      },
+      "slot": {
+        "row": "upperMid",
+        "col": "front"
       }
     },
     {
@@ -115,6 +133,10 @@
       "quad": {
         "x": 205,
         "y": 194
+      },
+      "slot": {
+        "row": "mid",
+        "col": "front"
       }
     },
     {
@@ -138,6 +160,11 @@
       "quad": {
         "x": 242,
         "y": 188
+      },
+      "slot": {
+        "row": "mid",
+        "col": "frontCentral",
+        "dx": 10
       }
     },
     {
@@ -162,6 +189,11 @@
       "quad": {
         "x": 275,
         "y": 170
+      },
+      "slot": {
+        "row": "mid",
+        "col": "central",
+        "dy": -12
       }
     },
     {
@@ -185,6 +217,11 @@
       "quad": {
         "x": 282,
         "y": 270
+      },
+      "slot": {
+        "row": "nearOpen",
+        "col": "central",
+        "dx": -6
       }
     },
     {
@@ -210,6 +247,10 @@
       "quad": {
         "x": 380,
         "y": 86
+      },
+      "slot": {
+        "row": "high",
+        "col": "back"
       }
     },
     {
@@ -234,6 +275,10 @@
       "quad": {
         "x": 360,
         "y": 118
+      },
+      "slot": {
+        "row": "nearHigh",
+        "col": "back"
       }
     },
     {
@@ -256,6 +301,11 @@
       "quad": {
         "x": 386,
         "y": 132
+      },
+      "slot": {
+        "row": "upperMid",
+        "col": "back",
+        "dx": 8
       }
     },
     {
@@ -279,6 +329,12 @@
       "quad": {
         "x": 274,
         "y": 226
+      },
+      "slot": {
+        "row": "lowerMid",
+        "col": "frontCentral",
+        "dx": -10,
+        "dy": 8
       }
     },
     {
@@ -302,6 +358,12 @@
       "quad": {
         "x": 286,
         "y": 198
+      },
+      "slot": {
+        "row": "lowerMid",
+        "col": "central",
+        "dx": 22,
+        "dy": 4
       }
     },
     {
@@ -325,6 +387,10 @@
       "quad": {
         "x": 346,
         "y": 170
+      },
+      "slot": {
+        "row": "upperMid",
+        "col": "backCentral"
       }
     },
     {
@@ -348,6 +414,10 @@
       "quad": {
         "x": 340,
         "y": 210
+      },
+      "slot": {
+        "row": "mid",
+        "col": "backCentral"
       }
     },
     {
@@ -371,6 +441,11 @@
       "quad": {
         "x": 382,
         "y": 223
+      },
+      "slot": {
+        "row": "lowerMid",
+        "col": "back",
+        "dx": 6
       }
     },
     {
@@ -395,6 +470,10 @@
       "quad": {
         "x": 220,
         "y": 252
+      },
+      "slot": {
+        "row": "nearOpen",
+        "col": "front"
       }
     },
     {
@@ -418,6 +497,12 @@
       "quad": {
         "x": 310,
         "y": 298
+      },
+      "slot": {
+        "row": "nearOpen",
+        "col": "backCentral",
+        "dx": -18,
+        "dy": 24
       }
     },
     {
@@ -440,6 +525,12 @@
       "quad": {
         "x": 336,
         "y": 312
+      },
+      "slot": {
+        "row": "open",
+        "col": "back",
+        "dx": -26,
+        "dy": 12
       }
     },
     {
@@ -462,6 +553,12 @@
       "quad": {
         "x": 255,
         "y": 282
+      },
+      "slot": {
+        "row": "nearOpen",
+        "col": "central",
+        "dx": -20,
+        "dy": 24
       }
     },
     {
@@ -485,6 +582,12 @@
       "quad": {
         "x": 270,
         "y": 312
+      },
+      "slot": {
+        "row": "open",
+        "col": "central",
+        "dx": -36,
+        "dy": 8
       }
     },
     {
@@ -508,6 +611,11 @@
       "quad": {
         "x": 332,
         "y": 278
+      },
+      "slot": {
+        "row": "nearOpen",
+        "col": "backCentral",
+        "dx": 22
       }
     },
     {
@@ -531,6 +639,11 @@
       "quad": {
         "x": 386,
         "y": 284
+      },
+      "slot": {
+        "row": "open",
+        "col": "back",
+        "dx": 10
       }
     }
   ]
