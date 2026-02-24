@@ -245,7 +245,7 @@
         "sky",
         "wire"
       ],
-      "tongue": "low-central",
+      "tongue": "low-front",
       "lips": "unrounded",
       "length": "anchor",
       "type": "anchor",
@@ -538,7 +538,7 @@
         "cow",
         "hour"
       ],
-      "tongue": "low-central→high-back",
+      "tongue": "low-front→high-back",
       "lips": "rounding",
       "length": "long",
       "type": "diphthong",
@@ -566,7 +566,7 @@
       "example": [
         "hour"
       ],
-      "tongue": "low-central→high-back+r",
+      "tongue": "low-front→high-back+r",
       "lips": "rounding",
       "length": "r-colored",
       "type": "r-colored",
@@ -594,7 +594,7 @@
       "example": [
         "sky"
       ],
-      "tongue": "low-central→high-front",
+      "tongue": "low-front→high-front",
       "lips": "unrounded",
       "length": "long",
       "type": "diphthong",
@@ -623,7 +623,7 @@
         "wire",
         "air"
       ],
-      "tongue": "low-central→high-front+r",
+      "tongue": "low-front→high-front+r",
       "lips": "unrounded",
       "length": "r-colored",
       "type": "r-colored",

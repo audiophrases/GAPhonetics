@@ -104,11 +104,10 @@ function resolveNodePosition(p){
 }
 
 function drawSlotGrid(svg){
-  const mid = pointOnEdges(DIAGRAM.rows.mid);
-  const low = pointOnEdges(DIAGRAM.rows.nearOpen);
+  const g = getDiagramGuides();
 
   // High/Mid and Mid/Low separators
-  [mid, low].forEach(({ left, right }) => {
+  [g.mid, g.low].forEach(({ left, right }) => {
     svg.appendChild(svgEl('line', {
       class: 'slot-grid-line',
       x1: left.x,
@@ -118,28 +117,10 @@ function drawSlotGrid(svg){
     }));
   });
 
-  // Front/Central divider (diagonal) and Central/Back divider (vertical)
-  const frontTop = {
-    x: lerp(DIAGRAM.quad.tl.x, DIAGRAM.quad.tr.x, 0.33),
-    y: lerp(DIAGRAM.quad.tl.y, DIAGRAM.quad.tr.y, 0.33)
-  };
-  const frontBottom = {
-    x: lerp(DIAGRAM.quad.bl.x, DIAGRAM.quad.br.x, 0.62),
-    y: lerp(DIAGRAM.quad.bl.y, DIAGRAM.quad.br.y, 0.62)
-  };
-
-  const backTop = {
-    x: lerp(DIAGRAM.quad.tl.x, DIAGRAM.quad.tr.x, 0.7),
-    y: lerp(DIAGRAM.quad.tl.y, DIAGRAM.quad.tr.y, 0.7)
-  };
-  const backBottom = {
-    x: lerp(DIAGRAM.quad.bl.x, DIAGRAM.quad.br.x, 0.7),
-    y: lerp(DIAGRAM.quad.bl.y, DIAGRAM.quad.br.y, 0.7)
-  };
-
+  // Front/Central divider (diagonal) and Central/Back divider
   [
-    [frontTop, frontBottom],
-    [backTop, backBottom]
+    [g.frontTop, g.frontBottom],
+    [g.backTop, g.backBottom]
   ].forEach(([a, b]) => {
     svg.appendChild(svgEl('line', {
       class: 'slot-grid-line',
@@ -177,8 +158,8 @@ const SEGMENT_KEY_PREFS = {
   'high-back': ['ʊ', 'u'],
   'mid-back': ['ɔ'],
   'mid-central': ['ə', 'ʌ'],
-  'low-front': ['æ'],
-  'low-back': ['ɑ2', 'ɑ'],
+  'low-front': ['ɑ', 'æ'],
+  'low-back': ['ɑ2'],
   'low-central': ['ɑ']
 };
 
@@ -194,6 +175,93 @@ const CHART_LABEL_OVERRIDES = {
   'ɑ': 'a',
   'ɑ2': 'ɑ'
 };
+
+const CHART_SHEET = {
+  'i':  { row: 'high', col: 'front',   u: 0.54, v: 0.20 },
+  'ɪ':  { row: 'high', col: 'front',   u: 0.54, v: 0.56 },
+  'ɝ':  { row: 'high', col: 'central', u: 0.30, v: 0.26 },
+  'ɚ':  { row: 'high', col: 'central', u: 0.60, v: 0.26 },
+  'u':  { row: 'high', col: 'back',    u: 0.54, v: 0.24 },
+  'ʊ':  { row: 'high', col: 'back',    u: 0.54, v: 0.64 },
+
+  'eɪ': { row: 'mid',  col: 'front',   u: 0.44, v: 0.28 },
+  'ɛ':  { row: 'mid',  col: 'front',   u: 0.44, v: 0.74 },
+  'ʌ':  { row: 'mid',  col: 'central', u: 0.34, v: 0.48 },
+  'ə':  { row: 'mid',  col: 'central', u: 0.63, v: 0.48 },
+  'oʊ': { row: 'mid',  col: 'back',    u: 0.38, v: 0.30 },
+  'ɔ':  { row: 'mid',  col: 'back',    u: 0.38, v: 0.74 },
+
+  'æ':  { row: 'low',  col: 'front',   u: 0.56, v: 0.40 },
+  'ɑ':  { row: 'low',  col: 'front',   u: 0.60, v: 0.80 },
+  'ɑ2': { row: 'low',  col: 'back',    u: 0.46, v: 0.74 }
+};
+
+function xAtY(a, b, y){
+  const dy = b.y - a.y;
+  if (Math.abs(dy) < 0.0001) return (a.x + b.x) / 2;
+  const t = (y - a.y) / dy;
+  return lerp(a.x, b.x, t);
+}
+
+function getDiagramGuides(){
+  const mid = pointOnEdges(DIAGRAM.rows.mid);
+  const low = pointOnEdges(DIAGRAM.rows.nearOpen);
+
+  const frontTop = {
+    x: lerp(DIAGRAM.quad.tl.x, DIAGRAM.quad.tr.x, 0.33),
+    y: lerp(DIAGRAM.quad.tl.y, DIAGRAM.quad.tr.y, 0.33)
+  };
+  const frontBottom = {
+    x: lerp(DIAGRAM.quad.bl.x, DIAGRAM.quad.br.x, 0.62),
+    y: lerp(DIAGRAM.quad.bl.y, DIAGRAM.quad.br.y, 0.62)
+  };
+
+  const backTop = {
+    x: lerp(DIAGRAM.quad.tl.x, DIAGRAM.quad.tr.x, 0.7),
+    y: lerp(DIAGRAM.quad.tl.y, DIAGRAM.quad.tr.y, 0.7)
+  };
+  const backBottom = {
+    x: lerp(DIAGRAM.quad.bl.x, DIAGRAM.quad.br.x, 0.7),
+    y: lerp(DIAGRAM.quad.bl.y, DIAGRAM.quad.br.y, 0.7)
+  };
+
+  return { mid, low, frontTop, frontBottom, backTop, backBottom };
+}
+
+function sheetPoint(slot){
+  const g = getDiagramGuides();
+
+  const rowBands = {
+    high: [DIAGRAM.quad.tl.y, g.mid.left.y],
+    mid: [g.mid.left.y, g.low.left.y],
+    low: [g.low.left.y, DIAGRAM.quad.bl.y]
+  };
+
+  const [y0, y1] = rowBands[slot.row] || rowBands.mid;
+  const y = lerp(y0, y1, slot.v ?? 0.5);
+
+  const left = xAtY(DIAGRAM.quad.tl, DIAGRAM.quad.bl, y);
+  const right = xAtY(DIAGRAM.quad.tr, DIAGRAM.quad.br, y);
+  const frontMid = xAtY(g.frontTop, g.frontBottom, y);
+  const backMid = xAtY(g.backTop, g.backBottom, y);
+
+  const colBands = {
+    front: [left, frontMid],
+    central: [frontMid, backMid],
+    back: [backMid, right]
+  };
+
+  const [x0, x1] = colBands[slot.col] || colBands.central;
+  const x = lerp(x0, x1, slot.u ?? 0.5);
+
+  return { x, y };
+}
+
+function resolveChartNodePosition(p){
+  const slot = CHART_SHEET[p.key];
+  if (slot) return sheetPoint(slot);
+  return resolveNodePosition(p);
+}
 
 function canonicalMonophthongForSegment(segment) {
   const prefs = SEGMENT_KEY_PREFS[segment] || [];
@@ -297,7 +365,7 @@ function renderTileChart(){
     .filter(Boolean);
 
   for (const p of chartPhonemes){
-    const { x, y } = resolveNodePosition(p);
+    const { x, y } = resolveChartNodePosition(p);
 
     const node = svgEl('g', {
       class:'vowel-node',

@@ -64,22 +64,26 @@ body{
   display:grid;
   grid-template-columns: 1.35fr 1fr;
   grid-template-areas:
-    "chart table"
-    "details table"
+    "left table"
     "footer footer";
   column-gap:16px;
-  row-gap:0;
+  row-gap:12px;
   align-items:start;
 }
 
+.leftCol{
+  grid-area:left;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+
 .panel--chart{
-  grid-area:chart;
   border-bottom-left-radius:0;
   border-bottom-right-radius:0;
 }
-.panel--table{grid-area:table; align-self:stretch}
+.panel--table{grid-area:table; align-self:start}
 .panel--details{
-  grid-area:details;
   border-top-left-radius:0;
   border-top-right-radius:0;
 }
@@ -221,12 +225,12 @@ body{
   pointer-events:none;
 }
 .quad__label--zone{
-  font: 700 16px var(--sans);
+  font: 700 15px var(--sans);
   opacity:.92;
 }
 .quad__label--axis{
-  font: 700 30px var(--sans);
-  opacity:.9;
+  font: 700 14px var(--sans);
+  opacity:.88;
 }
 
 .vowel-node{cursor:pointer; outline:none}
@@ -325,12 +329,12 @@ body{
   .layout{
     grid-template-columns:1fr;
     grid-template-areas:
-      "chart"
-      "details"
+      "left"
       "table"
       "footer";
     row-gap:16px;
   }
+  .leftCol{gap:16px}
   .panel--chart,
   .panel--details{
     border-radius: var(--radius);

@@ -26,14 +26,33 @@
   </header>
 
   <main class="layout">
-    <!-- CHART 1: tile map (black background, like the screenshot) -->
-    <section class="panel panel--chart" aria-labelledby="h-tiles">
-      <div class="panel__head">
-        <h2 id="h-tiles">Vowel diagram</h2>
-        <div class="panel__hint">Interactive IPA chart (high/mid/low, front/central/back) aligned to a classic vowel quadrilateral layout.</div>
-      </div>
-      <div class="tileChart" id="tileChart" role="application" aria-label="Interactive vowel diagram"></div>
-    </section>
+    <div class="leftCol" aria-label="Diagram and details">
+      <!-- CHART 1: tile map (black background, like the screenshot) -->
+      <section class="panel panel--chart" aria-labelledby="h-tiles">
+        <div class="panel__head">
+          <h2 id="h-tiles">Vowel diagram</h2>
+          <div class="panel__hint">Interactive IPA chart (high/mid/low, front/central/back) aligned to a classic vowel quadrilateral layout.</div>
+        </div>
+        <div class="tileChart" id="tileChart" role="application" aria-label="Interactive vowel diagram"></div>
+      </section>
+
+      <!-- SIDE: details card -->
+      <aside class="panel panel--details" aria-labelledby="h-details">
+        <div class="panel__head">
+          <h2 id="h-details">Phoneme</h2>
+          <div class="panel__hint">Selected item details.</div>
+        </div>
+
+        <div class="card" id="details">
+          <div class="card__empty">Select a vowel to see details.</div>
+        </div>
+
+        <div class="legend">
+          <div class="legend__row"><span class="swatch swatch--sel"></span> selected</div>
+          <div class="legend__row"><span class="swatch swatch--hover"></span> hover</div>
+        </div>
+      </aside>
+    </div>
 
     <!-- CHART 2: table (symbol/example/tongue/lips/length) -->
     <section class="panel panel--table" aria-labelledby="h-table">
@@ -56,25 +75,6 @@
         </table>
       </div>
     </section>
-
-    <!-- CHART 3 removed: quadrilateral is now merged into the main interactive chart above -->
-
-    <!-- SIDE: details card -->
-    <aside class="panel panel--details" aria-labelledby="h-details">
-      <div class="panel__head">
-        <h2 id="h-details">Phoneme</h2>
-        <div class="panel__hint">Selected item details.</div>
-      </div>
-
-      <div class="card" id="details">
-        <div class="card__empty">Select a vowel to see details.</div>
-      </div>
-
-      <div class="legend">
-        <div class="legend__row"><span class="swatch swatch--sel"></span> selected</div>
-        <div class="legend__row"><span class="swatch swatch--hover"></span> hover</div>
-      </div>
-    </aside>
 
     <footer class="footer">
       <div>Data is editable in <code>data/phonemes.json</code>. Add audio files under <code>audio/</code> to enable playback.</div>
