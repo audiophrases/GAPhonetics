@@ -185,7 +185,7 @@
         "turn",
         "work"
       ],
-      "tongue": "mid-central",
+      "tongue": "high-central+r",
       "lips": "unrounded",
       "length": "r-colored",
       "type": "r-colored",
@@ -200,24 +200,55 @@
         "y": 170
       },
       "slot": {
-        "row": "mid",
+        "row": "high",
         "col": "central",
-        "dx": 20,
-        "dy": 0
+        "dx": 8,
+        "dy": 16
       }
     },
     {
-      "key": "ɑ",
-      "ipa": "ɑ",
-      "display": "ɑ",
+      "key": "ɚ",
+      "ipa": "ɚ",
+      "display": "ɚ",
       "example": [
         "water",
         "actor"
       ],
+      "tongue": "high-central+r",
+      "lips": "unrounded",
+      "length": "r-colored",
+      "type": "r-colored",
+      "rhotic": true,
+      "tile": {
+        "c": 9,
+        "r": 4,
+        "w": 1
+      },
+      "quad": {
+        "x": 302,
+        "y": 170
+      },
+      "slot": {
+        "row": "high",
+        "col": "central",
+        "dx": 35,
+        "dy": 16
+      }
+    },
+    {
+      "key": "ɑ",
+      "ipa": "a",
+      "display": "a",
+      "example": [
+        "cow",
+        "hour",
+        "sky",
+        "wire"
+      ],
       "tongue": "low-central",
       "lips": "unrounded",
-      "length": "short",
-      "type": "monophthong",
+      "length": "anchor",
+      "type": "anchor",
       "rhotic": false,
       "tile": {
         "c": 9,
@@ -507,7 +538,7 @@
         "cow",
         "hour"
       ],
-      "tongue": "low-front→high-back",
+      "tongue": "low-central→high-back",
       "lips": "rounding",
       "length": "long",
       "type": "diphthong",
@@ -535,7 +566,7 @@
       "example": [
         "hour"
       ],
-      "tongue": "low-front→high-back+r",
+      "tongue": "low-central→high-back+r",
       "lips": "rounding",
       "length": "r-colored",
       "type": "r-colored",
@@ -563,7 +594,7 @@
       "example": [
         "sky"
       ],
-      "tongue": "low-front→high-front",
+      "tongue": "low-central→high-front",
       "lips": "unrounded",
       "length": "long",
       "type": "diphthong",
@@ -592,7 +623,7 @@
         "wire",
         "air"
       ],
-      "tongue": "low-front→high-front+r",
+      "tongue": "low-central→high-front+r",
       "lips": "unrounded",
       "length": "r-colored",
       "type": "r-colored",

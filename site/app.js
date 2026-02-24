@@ -71,6 +71,7 @@ function slotFromTongueLabel(tongue = '') {
   const base = raw.split('→')[0].replace('+r', '').trim();
 
   if (base.startsWith('high-front')) return { row: 'high', col: 'front' };
+  if (base.startsWith('high-central')) return { row: 'high', col: 'central' };
   if (base.startsWith('high-back')) return { row: 'high', col: 'back' };
   if (base.startsWith('mid-front')) return { row: 'mid', col: 'front' };
   if (base.startsWith('mid-back')) return { row: 'mid', col: 'backCentral' };
@@ -103,8 +104,11 @@ function resolveNodePosition(p){
 }
 
 function drawSlotGrid(svg){
-  for (const t of Object.values(DIAGRAM.rows)) {
-    const { left, right } = pointOnEdges(t);
+  const mid = pointOnEdges(DIAGRAM.rows.mid);
+  const low = pointOnEdges(DIAGRAM.rows.nearOpen);
+
+  // High/Mid and Mid/Low separators
+  [mid, low].forEach(({ left, right }) => {
     svg.appendChild(svgEl('line', {
       class: 'slot-grid-line',
       x1: left.x,
@@ -112,38 +116,39 @@ function drawSlotGrid(svg){
       x2: right.x,
       y2: right.y
     }));
-  }
+  });
 
-  for (const u of Object.values(DIAGRAM.cols)) {
-    const top = {
-      x: lerp(DIAGRAM.quad.tl.x, DIAGRAM.quad.tr.x, u),
-      y: lerp(DIAGRAM.quad.tl.y, DIAGRAM.quad.tr.y, u)
-    };
-    const bot = {
-      x: lerp(DIAGRAM.quad.bl.x, DIAGRAM.quad.br.x, u),
-      y: lerp(DIAGRAM.quad.bl.y, DIAGRAM.quad.br.y, u)
-    };
+  // Front/Central divider (diagonal) and Central/Back divider (vertical)
+  const frontTop = {
+    x: lerp(DIAGRAM.quad.tl.x, DIAGRAM.quad.tr.x, 0.33),
+    y: lerp(DIAGRAM.quad.tl.y, DIAGRAM.quad.tr.y, 0.33)
+  };
+  const frontBottom = {
+    x: lerp(DIAGRAM.quad.bl.x, DIAGRAM.quad.br.x, 0.62),
+    y: lerp(DIAGRAM.quad.bl.y, DIAGRAM.quad.br.y, 0.62)
+  };
 
+  const backTop = {
+    x: lerp(DIAGRAM.quad.tl.x, DIAGRAM.quad.tr.x, 0.7),
+    y: lerp(DIAGRAM.quad.tl.y, DIAGRAM.quad.tr.y, 0.7)
+  };
+  const backBottom = {
+    x: lerp(DIAGRAM.quad.bl.x, DIAGRAM.quad.br.x, 0.7),
+    y: lerp(DIAGRAM.quad.bl.y, DIAGRAM.quad.br.y, 0.7)
+  };
+
+  [
+    [frontTop, frontBottom],
+    [backTop, backBottom]
+  ].forEach(([a, b]) => {
     svg.appendChild(svgEl('line', {
       class: 'slot-grid-line',
-      x1: top.x,
-      y1: top.y,
-      x2: bot.x,
-      y2: bot.y
+      x1: a.x,
+      y1: a.y,
+      x2: b.x,
+      y2: b.y
     }));
-  }
-
-  for (const t of Object.values(DIAGRAM.rows)) {
-    for (const u of Object.values(DIAGRAM.cols)) {
-      const { left, right } = pointOnEdges(t);
-      svg.appendChild(svgEl('circle', {
-        class: 'slot-grid-dot',
-        cx: lerp(left.x, right.x, u),
-        cy: lerp(left.y, right.y, u),
-        r: 1.9
-      }));
-    }
-  }
+  });
 }
 
 function normalizeQuery(q){
@@ -178,9 +183,8 @@ const SEGMENT_KEY_PREFS = {
 };
 
 const CHART_NODE_KEYS = [
-  'i', 'ɪ', 'u', 'ʊ',
-  'ɝ', 'ə',
-  'eɪ', 'ɛ', 'ʌ', 'oʊ', 'ɔ',
+  'i', 'ɪ', 'ɝ', 'ɚ', 'u', 'ʊ',
+  'eɪ', 'ɛ', 'ʌ', 'ə', 'oʊ', 'ɔ',
   'æ', 'ɑ', 'ɑ2'
 ];
 
@@ -275,13 +279,18 @@ function renderTileChart(){
   drawSlotGrid(svg);
 
   [
-    ['78', '30', 'High'],
-    ['78', '130', 'Mid'],
-    ['78', '312', 'Low'],
-    ['155', '24', 'Front'],
-    ['250', '24', 'Central'],
-    ['350', '24', 'Back']
-  ].forEach(([x,y,t]) => svg.appendChild(svgEl('text', { x, y, class:'quad__label' }, t)));
+    { x: 152, y: 24, text: 'Front', cls: 'quad__label quad__label--zone' },
+    { x: 252, y: 24, text: 'Central', cls: 'quad__label quad__label--zone' },
+    { x: 352, y: 24, text: 'Back', cls: 'quad__label quad__label--zone' },
+
+    { x: 62, y: 82, text: 'High', cls: 'quad__label quad__label--axis' },
+    { x: 62, y: 188, text: 'Mid', cls: 'quad__label quad__label--axis' },
+    { x: 68, y: 292, text: 'Low', cls: 'quad__label quad__label--axis' },
+
+    { x: 452, y: 82, text: 'High', cls: 'quad__label quad__label--axis' },
+    { x: 452, y: 188, text: 'Mid', cls: 'quad__label quad__label--axis' },
+    { x: 458, y: 292, text: 'Low', cls: 'quad__label quad__label--axis' }
+  ].forEach(({ x, y, text, cls }) => svg.appendChild(svgEl('text', { x, y, class: cls }, text)));
 
   const chartPhonemes = CHART_NODE_KEYS
     .map((key) => state.byKey.get(key))

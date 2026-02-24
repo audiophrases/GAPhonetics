@@ -152,17 +152,12 @@ body{
   height:100%;
 }
 .stageSvg .guide,
-.stageSvg .slot-grid-line,
-.stageSvg .slot-grid-dot{pointer-events:none}
+.stageSvg .slot-grid-line{pointer-events:none}
 .stageSvg .guide{opacity:.92}
 .stageSvg .slot-grid-line{
-  stroke:#9ca3af;
-  stroke-opacity:.28;
-  stroke-width:1.1;
-}
-.stageSvg .slot-grid-dot{
-  fill:#9ca3af;
-  fill-opacity:.28;
+  stroke:#6b7280;
+  stroke-opacity:.7;
+  stroke-width:1.5;
 }
 .tile__top{
   background: var(--tileTop);
@@ -222,10 +217,16 @@ body{
 /* Quad (merged into tile stage as an SVG background) */
 .quad__svg{width:100%; height:auto; display:block}
 .quad__label{
-  font: 700 13px var(--sans);
   fill:#111827;
-  opacity:.78;
   pointer-events:none;
+}
+.quad__label--zone{
+  font: 700 16px var(--sans);
+  opacity:.92;
+}
+.quad__label--axis{
+  font: 700 30px var(--sans);
+  opacity:.9;
 }
 
 .vowel-node{cursor:pointer; outline:none}
