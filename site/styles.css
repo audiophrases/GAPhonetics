@@ -9,6 +9,9 @@
   --tile:#fefefe;
   --tileTop:#eab308;
   --tileBorder:#111;
+  --marker:#111827;
+  --markerHover:#2563eb;
+  --markerSel:#16a34a;
   --shadow:0 8px 30px rgba(0,0,0,.12);
   --radius:14px;
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -97,20 +100,16 @@ body{
   position:relative;
   width:100%;
   aspect-ratio: 520 / 360;
-  background: #000;
+  background:#fff;
+  border:1px solid #e5e7eb;
   border-radius: 10px;
   overflow:hidden;
 }
 .tileStage::before{
-  /* faint guide grid */
   content:"";
   position:absolute;
   inset:0;
-  background-image:
-    linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
-  background-size: 52px 45px;
-  opacity:.18;
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
   pointer-events:none;
 }
 
