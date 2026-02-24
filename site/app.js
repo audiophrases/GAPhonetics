@@ -177,6 +177,20 @@ const SEGMENT_KEY_PREFS = {
   'low-central': ['ɑ']
 };
 
+const CHART_NODE_KEYS = [
+  'i', 'ɪ', 'u', 'ʊ',
+  'ɝ', 'ə',
+  'eɪ', 'ɛ', 'ʌ', 'oʊ', 'ɔ',
+  'æ', 'ɑ', 'ɑ2'
+];
+
+const CHART_LABEL_OVERRIDES = {
+  'eɪ': 'e',
+  'oʊ': 'o',
+  'ɑ': 'a',
+  'ɑ2': 'ɑ'
+};
+
 function canonicalMonophthongForSegment(segment) {
   const prefs = SEGMENT_KEY_PREFS[segment] || [];
 
@@ -269,7 +283,9 @@ function renderTileChart(){
     ['350', '24', 'Back']
   ].forEach(([x,y,t]) => svg.appendChild(svgEl('text', { x, y, class:'quad__label' }, t)));
 
-  const chartPhonemes = state.phonemes.filter((p) => !isDiphthongLike(p));
+  const chartPhonemes = CHART_NODE_KEYS
+    .map((key) => state.byKey.get(key))
+    .filter(Boolean);
 
   for (const p of chartPhonemes){
     const { x, y } = resolveNodePosition(p);
@@ -285,7 +301,8 @@ function renderTileChart(){
     node.appendChild(svgEl('circle', { class:'vowel-node__dot', cx:'0', cy:'0', r:'11' }));
 
     if (state.showLabels) {
-      node.appendChild(svgEl('text', { class:'vowel-node__ipa', x:'0', y:'1.5' }, p.display || p.ipa));
+      const label = CHART_LABEL_OVERRIDES[p.key] || p.display || p.ipa;
+      node.appendChild(svgEl('text', { class:'vowel-node__ipa', x:'0', y:'1.5' }, label));
     }
 
     wireInteractive(node, p);
