@@ -111,6 +111,52 @@ const TONGUE_POSTURES = {
   'central':    `M 88 168 C 110 162 145 145 192 140 C 250 134 308 145 354 168 C 400 198 430 255 424 325 C 418 360 390 378 366 380 C 278 368 186 336 128 278 C 100 232 88 192 88 168 Z`
 };
 
+// Dynamic Lip & Facial Profile postures (rounded / protruded, spread / retracted, neutral)
+const LIP_POSTURES = {
+  rounded: {
+    upper: 'M 28 120 C 10 124 6 132 12 140 C 18 144 24 142 28 140',
+    lower: 'M 28 148 C 8 152 10 162 20 168 C 24 170 28 170 32 170',
+    profile: `
+      M 38 24
+      C 30 52 18 84 10 102
+      C 16 112 20 118 10 126
+      C 4 132 4 138 16 144
+      C 6 150 8 160 18 166
+      C 24 176 26 186 22 200
+      C 24 220 24 234 26 240
+      C 32 284 70 324 134 360
+      C 192 385 284 406 372 412
+    `
+  },
+  spread: {
+    upper: 'M 30 122 C 24 128 26 134 32 138 C 34 140 36 140 38 140',
+    lower: 'M 34 150 C 28 154 28 164 34 168 C 36 170 38 170 40 170',
+    profile: `
+      M 38 24
+      C 30 52 18 84 10 102
+      C 18 110 24 118 20 128
+      C 26 136 28 142 24 150
+      C 28 158 28 166 26 172
+      C 26 192 26 218 26 240
+      C 32 284 70 324 134 360
+      C 192 385 284 406 372 412
+    `
+  },
+  neutral: {
+    upper: 'M 28 122 C 16 132 16 136 30 142',
+    lower: 'M 28 154 C 18 160 20 168 30 170',
+    profile: `
+      M 38 24
+      C 30 52 18 84 10 102
+      C 18 110 26 118 16 132
+      C 25 142 30 148 18 162
+      C 30 192 28 218 26 240
+      C 32 284 70 324 134 360
+      C 192 385 284 406 372 412
+    `
+  }
+};
+
 function lerp(a, b, t) {
   return a + (b - a) * t;
 }
@@ -232,6 +278,39 @@ function resolvePostureKey(p) {
   return 'central';
 }
 
+function resolveArticulatoryPosture(p) {
+  if (!p) {
+    return {
+      postureKey: 'central',
+      lipShape: 'neutral',
+      jawOpen: 'mid'
+    };
+  }
+
+  const postureKey = resolvePostureKey(p);
+  const t = normalizeTongueLabel(p.tongue || '');
+  const l = String(p.lips || '').toLowerCase();
+  const j = String(p.articulatory?.jaw || '').toLowerCase();
+
+  // Lip Shape: rounded, spread, or neutral
+  let lipShape = 'neutral';
+  if (l.includes('round') && !l.includes('unround')) {
+    lipShape = 'rounded';
+  } else if (l.includes('unround') || t.includes('front')) {
+    lipShape = 'spread';
+  }
+
+  // Jaw Drop: closed, mid, open
+  let jawOpen = 'mid';
+  if (t.includes('high') || j.includes('closed') || j.includes('narrow') || j.includes('nearly closed')) {
+    jawOpen = 'closed';
+  } else if (t.includes('low') || j.includes('wide') || j.includes('dropped') || j.includes('maximum')) {
+    jawOpen = 'open';
+  }
+
+  return { postureKey, lipShape, jawOpen };
+}
+
 function resolveLipIcon(lips = '') {
   const l = String(lips || '').toLowerCase();
   if (l.includes('round') && !l.includes('unround')) {
@@ -318,40 +397,38 @@ function drawVocalTractAnatomy(svg) {
     `
   }));
 
-  // Facial Profile facing Left
+  // Dynamic Morphing Articulatory Posture
+  const activeKey = state.hover || state.selected;
+  const activeP = state.byKey.get(activeKey);
+  const { postureKey, lipShape, jawOpen } = resolveArticulatoryPosture(activeP);
+  const tongueD = TONGUE_POSTURES[postureKey] || TONGUE_POSTURES.central;
+  const lipConfig = LIP_POSTURES[lipShape] || LIP_POSTURES.neutral;
+
+  let jawRot = 0;
+  if (jawOpen === 'closed') jawRot = -2.8;
+  else if (jawOpen === 'open') jawRot = 4.8;
+
+  // Facial Profile facing Left (Dynamic lips & chin)
   g.appendChild(svgEl('path', {
+    id: 'dynamicProfile',
     class: 'vt-profile',
-    d: `
-      M 38 24
-      C 30 52 18 84 10 102
-      C 18 110 26 118 16 132
-      C 25 142 30 148 18 162
-      C 30 192 28 218 26 240
-      C 32 284 70 324 134 360
-      C 192 385 284 406 372 412
-    `
+    d: lipConfig.profile
   }));
 
-  // Lips Vermilion
+  // Upper Lip Vermilion (Dynamic)
   g.appendChild(svgEl('path', {
-    class: 'vt-lips',
-    d: `
-      M 28 122 C 16 132 16 136 30 142
-      M 28 158 C 18 162 20 170 30 170
-    `
+    id: 'dynamicUpperLip',
+    class: 'vt-lip vt-lip--upper',
+    d: lipConfig.upper
   }));
 
-  // Teeth
+  // Upper Teeth (Maxillary Incisor - Fixed to skull)
   g.appendChild(svgEl('polygon', {
-    class: 'vt-teeth',
+    class: 'vt-teeth vt-teeth--upper',
     points: '74,120 86,122 84,142 76,142'
   }));
-  g.appendChild(svgEl('polygon', {
-    class: 'vt-teeth',
-    points: '78,160 85,160 84,176 77,176'
-  }));
 
-  // Hard Palate & Alveolar Ridge
+  // Hard Palate & Alveolar Ridge (Fixed)
   g.appendChild(svgEl('path', {
     class: 'vt-palate',
     d: `
@@ -365,7 +442,7 @@ function drawVocalTractAnatomy(svg) {
     `
   }));
 
-  // Pharyngeal Wall
+  // Pharyngeal Wall & Throat
   g.appendChild(svgEl('path', {
     class: 'vt-pharynx',
     d: `
@@ -376,8 +453,28 @@ function drawVocalTractAnatomy(svg) {
     `
   }));
 
-  // Mandible
-  g.appendChild(svgEl('path', {
+  // Dynamic Mandible Group (Lower Jaw & Teeth pivoting on TMJ hinge at 380, 240)
+  const mandibleGroup = svgEl('g', {
+    id: 'dynamicMandible',
+    class: 'vt-mandible-group',
+    transform: `rotate(${jawRot} 380 240)`
+  });
+
+  // Lower Teeth (Mandibular Incisor)
+  mandibleGroup.appendChild(svgEl('polygon', {
+    class: 'vt-teeth vt-teeth--lower',
+    points: '78,160 85,160 84,176 77,176'
+  }));
+
+  // Lower Lip Vermilion (Dynamic)
+  mandibleGroup.appendChild(svgEl('path', {
+    id: 'dynamicLowerLip',
+    class: 'vt-lip vt-lip--lower',
+    d: lipConfig.lower
+  }));
+
+  // Mandible Bone Outline
+  mandibleGroup.appendChild(svgEl('path', {
     class: 'vt-mandible',
     d: `
       M 78 176
@@ -387,12 +484,9 @@ function drawVocalTractAnatomy(svg) {
     `
   }));
 
-  // Dynamic Morphing Tongue Posture
-  const activeKey = state.hover || state.selected;
-  const activeP = state.byKey.get(activeKey);
-  const postureKey = resolvePostureKey(activeP);
-  const tongueD = TONGUE_POSTURES[postureKey] || TONGUE_POSTURES.central;
+  g.appendChild(mandibleGroup);
 
+  // Dynamic Morphing Tongue Posture
   g.appendChild(svgEl('path', {
     id: 'dynamicTongue',
     class: 'vt-tongue vt-tongue--active',
@@ -1027,53 +1121,92 @@ function renderCompareCard(root) {
   );
   root.appendChild(compHeader);
 
-  const columns = el('div', { class: 'compareColumns' },
-    // Col A
-    el('div', { class: 'compCol compCol--a' },
-      el('div', { class: 'compCol__head' },
-        el('span', { class: 'compSym' }, `/${pA.ipa}/`),
-        (pA.example || [])[0] ? el('span', { class: 'badge' }, (pA.example || [])[0]) : null
-      ),
-      el('div', { class: 'compProp' }, el('strong', {}, 'Tongue: '), pA.tongue || '—'),
-      el('div', { class: 'compProp', innerHTML: `<strong>Lips:</strong> ${resolveLipIcon(pA.lips)} ${pA.lips || '—'}` }),
-      el('div', { class: 'compProp' }, el('strong', {}, 'Type: '), pA.type || pA.length || '—'),
-      el('div', { class: 'compCue' }, (pA.articulatory?.cue) || (pA.articulatory?.tongue) || ''),
-      el('div', { class: 'compAudio' },
-        playButton(`/${pA.ipa}/`, audioUrlForPhoneme(pA), true)
-      ),
-      el('div', { class: 'compWords' },
-        (pA.example || []).slice(0, 3).map((w) => playButton(w, audioUrlForWord(w), true))
-      )
+  // Col A
+  const colA = el('div', { class: 'compCol compCol--a' },
+    el('div', { class: 'compCol__head' },
+      el('span', { class: 'compSym' }, `/${pA.ipa}/`),
+      (pA.example || [])[0] ? el('span', { class: 'badge' }, (pA.example || [])[0]) : null
     ),
-
-    // Col B
-    el('div', { class: 'compCol compCol--b' },
-      el('div', { class: 'compCol__head' },
-        el('span', { class: 'compSym' }, `/${pB.ipa}/`),
-        (pB.example || [])[0] ? el('span', { class: 'badge' }, (pB.example || [])[0]) : null
-      ),
-      el('div', { class: 'compProp' }, el('strong', {}, 'Tongue: '), pB.tongue || '—'),
-      el('div', { class: 'compProp', innerHTML: `<strong>Lips:</strong> ${resolveLipIcon(pB.lips)} ${pB.lips || '—'}` }),
-      el('div', { class: 'compProp' }, el('strong', {}, 'Type: '), pB.type || pB.length || '—'),
-      el('div', { class: 'compCue' }, (pB.articulatory?.cue) || (pB.articulatory?.tongue) || ''),
-      el('div', { class: 'compAudio' },
-        playButton(`/${pB.ipa}/`, audioUrlForPhoneme(pB), true)
-      ),
-      el('div', { class: 'compWords' },
-        (pB.example || []).slice(0, 3).map((w) => playButton(w, audioUrlForWord(w), true))
-      )
+    el('div', { class: 'compProp' }, el('strong', {}, 'Tongue: '), pA.tongue || '—'),
+    el('div', { class: 'compProp', innerHTML: `<strong>Lips:</strong> ${resolveLipIcon(pA.lips)} ${pA.lips || '—'}` }),
+    el('div', { class: 'compProp' }, el('strong', {}, 'Type: '), pA.type || pA.length || '—'),
+    el('div', { class: 'compCue' }, (pA.articulatory?.cue) || (pA.articulatory?.tongue) || ''),
+    el('div', { class: 'compAudio' },
+      playButton(`/${pA.ipa}/`, audioUrlForPhoneme(pA), true)
+    ),
+    el('div', { class: 'compWords' },
+      (pA.example || []).slice(0, 3).map((w) => playButton(w, audioUrlForWord(w), true))
     )
   );
+  colA.addEventListener('mouseenter', () => setHover(pA.key));
+  colA.addEventListener('mouseleave', () => setHover(null));
+
+  // Col B
+  const colB = el('div', { class: 'compCol compCol--b' },
+    el('div', { class: 'compCol__head' },
+      el('span', { class: 'compSym' }, `/${pB.ipa}/`),
+      (pB.example || [])[0] ? el('span', { class: 'badge' }, (pB.example || [])[0]) : null
+    ),
+    el('div', { class: 'compProp' }, el('strong', {}, 'Tongue: '), pB.tongue || '—'),
+    el('div', { class: 'compProp', innerHTML: `<strong>Lips:</strong> ${resolveLipIcon(pB.lips)} ${pB.lips || '—'}` }),
+    el('div', { class: 'compProp' }, el('strong', {}, 'Type: '), pB.type || pB.length || '—'),
+    el('div', { class: 'compCue' }, (pB.articulatory?.cue) || (pB.articulatory?.tongue) || ''),
+    el('div', { class: 'compAudio' },
+      playButton(`/${pB.ipa}/`, audioUrlForPhoneme(pB), true)
+    ),
+    el('div', { class: 'compWords' },
+      (pB.example || []).slice(0, 3).map((w) => playButton(w, audioUrlForWord(w), true))
+    )
+  );
+  colB.addEventListener('mouseenter', () => setHover(pB.key));
+  colB.addEventListener('mouseleave', () => setHover(null));
+
+  const columns = el('div', { class: 'compareColumns' }, colA, colB);
   root.appendChild(columns);
 }
 
 async function playCompareSequence(pA, pB) {
   try {
+    updateAnatomyVisuals(pA);
     await playPhoneme(pA);
     await new Promise((r) => setTimeout(r, 450));
+    updateAnatomyVisuals(pB);
     await playPhoneme(pB);
+    await new Promise((r) => setTimeout(r, 300));
+    const activeP = state.byKey.get(state.selected);
+    if (activeP) updateAnatomyVisuals(activeP);
   } catch (err) {
     console.warn('Compare sequence failed', err);
+  }
+}
+
+function updateAnatomyVisuals(p) {
+  if (!p) return;
+  const { postureKey, lipShape, jawOpen } = resolveArticulatoryPosture(p);
+
+  // 1. Dynamic Tongue
+  const tongueEl = $('#dynamicTongue');
+  if (tongueEl) {
+    const newD = TONGUE_POSTURES[postureKey] || TONGUE_POSTURES.central;
+    tongueEl.setAttribute('d', newD);
+  }
+
+  // 2. Dynamic Lips & Facial Profile
+  const lipConfig = LIP_POSTURES[lipShape] || LIP_POSTURES.neutral;
+  const upperLipEl = $('#dynamicUpperLip');
+  const lowerLipEl = $('#dynamicLowerLip');
+  const profileEl = $('#dynamicProfile');
+  if (upperLipEl && lipConfig.upper) upperLipEl.setAttribute('d', lipConfig.upper);
+  if (lowerLipEl && lipConfig.lower) lowerLipEl.setAttribute('d', lipConfig.lower);
+  if (profileEl && lipConfig.profile) profileEl.setAttribute('d', lipConfig.profile);
+
+  // 3. Dynamic Lower Jaw & Lower Teeth (TMJ Rotation)
+  const mandibleEl = $('#dynamicMandible');
+  if (mandibleEl) {
+    let rot = 0;
+    if (jawOpen === 'closed') rot = -2.8;
+    else if (jawOpen === 'open') rot = 4.8;
+    mandibleEl.setAttribute('transform', `rotate(${rot} 380 240)`);
   }
 }
 
@@ -1123,6 +1256,7 @@ function setSelected(key) {
 
   const p = state.byKey.get(key);
   if (p) {
+    updateAnatomyVisuals(p);
     primeAudio(audioUrlForPhoneme(p));
     (p.example || []).slice(0, 4).forEach((w) => primeAudio(audioUrlForWord(w)));
   }
@@ -1133,11 +1267,8 @@ function setHover(key) {
   syncHighlights();
 
   const activeP = state.byKey.get(key || state.selected);
-  const tongueEl = $('#dynamicTongue');
-  if (tongueEl && activeP) {
-    const postureKey = resolvePostureKey(activeP);
-    const newD = TONGUE_POSTURES[postureKey] || TONGUE_POSTURES.central;
-    tongueEl.setAttribute('d', newD);
+  if (activeP) {
+    updateAnatomyVisuals(activeP);
   }
 }
 
