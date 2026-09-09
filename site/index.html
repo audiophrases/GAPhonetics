@@ -24,7 +24,7 @@
         <input id="search" type="search" placeholder="Search /æ/, 'cat', 'bird', 'oʊ'..." autocomplete="off" />
       </label>
 
-      <button id="toggleCompareBtn" class="btn btn--toggle" type="button" aria-pressed="false">
+      <button id="toggleCompareBtn" class="btn btn--toggle is-active" type="button" aria-pressed="true">
         <span class="btn__icon">⚖️</span>
         <span>Compare Vowels</span>
       </button>
@@ -55,18 +55,18 @@
     </div>
   </nav>
 
-  <!-- Compare mode banner / toolbar (visible when compare mode is active) -->
-  <section id="compareSection" class="compareBar is-hidden" aria-label="Vowel comparison mode">
+  <!-- Compare mode banner / toolbar (visible by default) -->
+  <section id="compareSection" class="compareBar" aria-label="Vowel comparison mode">
     <div class="compareBar__inner">
       <div class="comparePickers">
         <div class="comparePicker comparePicker--a">
-          <label for="compareSelectA">Vowel A (Primary):</label>
-          <select id="compareSelectA"></select>
+          <span class="swatch swatch--sel" title="Primary vowel"></span>
+          <select id="compareSelectA" aria-label="Primary vowel"></select>
         </div>
         <button id="compareSwapBtn" class="btn btn--icon" type="button" title="Swap vowels" aria-label="Swap vowels">⇄</button>
         <div class="comparePicker comparePicker--b">
-          <label for="compareSelectB">Vowel B (Contrast):</label>
-          <select id="compareSelectB"></select>
+          <span class="swatch swatch--compB" title="Contrast vowel"></span>
+          <select id="compareSelectB" aria-label="Contrast vowel"></select>
         </div>
         <button id="playBothBtn" class="btn btn--accent" type="button">
           <span>▶ Play Sequence</span>
@@ -127,10 +127,10 @@
         </div>
 
         <div class="legend">
-          <div class="legend__row"><span class="swatch swatch--sel"></span> Selected (Click)</div>
+          <div class="legend__row"><span class="swatch swatch--sel"></span> Primary Vowel (Selected)</div>
+          <div class="legend__row compareOnly"><span class="swatch swatch--compB"></span> Contrast Vowel</div>
           <div class="legend__row"><span class="swatch swatch--hover"></span> Hover</div>
           <div class="legend__row"><span class="swatch swatch--glide"></span> Diphthong / Rhotic Glide</div>
-          <div class="legend__row compareOnly is-hidden"><span class="swatch swatch--compB"></span> Vowel B (Contrast)</div>
         </div>
       </aside>
     </div>

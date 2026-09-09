@@ -11,7 +11,7 @@ const state = {
   showGlides: true,
   anatomyMode: 'subtle', // 'subtle' | 'full' | 'off'
   activeFilter: 'all',
-  compareMode: false,
+  compareMode: true,
   compareA: 'i',
   compareB: 'ɪ',
   playbackRate: 1.0,
@@ -735,15 +735,6 @@ function renderTileChart() {
       }
     }
 
-    // Comparison tags A / B
-    if (isCompA) {
-      node.appendChild(svgEl('circle', { class: 'comp-badge comp-badge--a', cx: '-12', cy: '-10', r: '6.5' }));
-      node.appendChild(svgEl('text', { class: 'comp-badge-text', x: '-12', y: '-7.5' }, 'A'));
-    } else if (isCompB) {
-      node.appendChild(svgEl('circle', { class: 'comp-badge comp-badge--b', cx: '12', cy: '-10', r: '6.5' }));
-      node.appendChild(svgEl('text', { class: 'comp-badge-text', x: '12', y: '-7.5' }, 'B'));
-    }
-
     wireInteractive(node, p);
     svg.appendChild(node);
   }
@@ -773,11 +764,7 @@ function renderTable() {
     const lipIconHtml = resolveLipIcon(p.lips);
 
     const tr = el('tr', { 'data-key': p.key, class: trClasses.join(' ') },
-      el('td', {},
-        el('code', { class: 'sym-code' }, `/${p.ipa}/`),
-        isCompA ? el('span', { class: 'badge badge--a' }, 'A') : null,
-        isCompB ? el('span', { class: 'badge badge--b' }, 'B') : null
-      ),
+      el('td', {}, el('code', { class: 'sym-code' }, `/${p.ipa}/`)),
       el('td', {}, (p.example || []).join(', ')),
       el('td', {}, p.tongue || ''),
       el('td', {},
@@ -790,10 +777,8 @@ function renderTable() {
     tr.addEventListener('mouseleave', () => setHover(null));
     tr.addEventListener('click', () => {
       if (state.compareMode) {
-        if (state.selected === p.key) {
+        if (state.compareA !== p.key) {
           state.compareB = p.key;
-        } else {
-          state.compareA = p.key;
         }
         syncCompareDropdowns();
       }
@@ -1068,8 +1053,8 @@ function renderCompareCard(root) {
     // Col A
     el('div', { class: 'compCol compCol--a' },
       el('div', { class: 'compCol__head' },
-        el('span', { class: 'badge badge--a' }, 'Vowel A'),
-        el('span', { class: 'compSym' }, `/${pA.ipa}/`)
+        el('span', { class: 'compSym' }, `/${pA.ipa}/`),
+        (pA.example || [])[0] ? el('span', { class: 'badge' }, (pA.example || [])[0]) : null
       ),
       el('div', { class: 'compProp' }, el('strong', {}, 'Tongue: '), pA.tongue || '—'),
       el('div', { class: 'compProp', innerHTML: `<strong>Lips:</strong> ${resolveLipIcon(pA.lips)} ${pA.lips || '—'}` }),
@@ -1086,8 +1071,8 @@ function renderCompareCard(root) {
     // Col B
     el('div', { class: 'compCol compCol--b' },
       el('div', { class: 'compCol__head' },
-        el('span', { class: 'badge badge--b' }, 'Vowel B'),
-        el('span', { class: 'compSym' }, `/${pB.ipa}/`)
+        el('span', { class: 'compSym' }, `/${pB.ipa}/`),
+        (pB.example || [])[0] ? el('span', { class: 'badge' }, (pB.example || [])[0]) : null
       ),
       el('div', { class: 'compProp' }, el('strong', {}, 'Tongue: '), pB.tongue || '—'),
       el('div', { class: 'compProp', innerHTML: `<strong>Lips:</strong> ${resolveLipIcon(pB.lips)} ${pB.lips || '—'}` }),
