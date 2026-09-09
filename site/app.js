@@ -408,11 +408,6 @@ function drawVocalTractAnatomy(svg) {
     `
   }));
 
-  // Speaker Orientation Indicator
-  const compass = svgEl('g', { class: 'vt-compass', transform: 'translate(36, 400)' });
-  compass.appendChild(svgEl('text', { class: 'vt-compass__text', x: '0', y: '0' }, '🗣 Facing LEFT (Lips/Teeth)'));
-  g.appendChild(compass);
-
   // Anatomical Callout Labels
   const callouts = [
     { x: 50, y: 88, label: 'LIPS & TEETH', sub: '(Front)', anchor: 'middle' },
@@ -437,23 +432,6 @@ function drawVocalTractAnatomy(svg) {
     }, sub));
     g.appendChild(textGroup);
   });
-
-  // Vertical Jaw Drop Caliper along the High-Mid-Low Axis
-  const caliperGroup = svgEl('g', { class: 'jaw-caliper', 'aria-label': 'Jaw opening gauge' });
-
-  // High Caliper bracket: ~2mm
-  caliperGroup.appendChild(svgEl('path', { class: 'caliper-bracket', d: 'M 58 80 L 50 80 L 50 114 L 58 114' }));
-  caliperGroup.appendChild(svgEl('text', { class: 'caliper-label', x: '47', y: '100', 'text-anchor': 'end' }, '1-2mm (Closed)'));
-
-  // Mid Caliper bracket: ~12mm (1 finger)
-  caliperGroup.appendChild(svgEl('path', { class: 'caliper-bracket', d: 'M 58 200 L 50 200 L 50 238 L 58 238' }));
-  caliperGroup.appendChild(svgEl('text', { class: 'caliper-label', x: '47', y: '222', 'text-anchor': 'end' }, '1 finger (~12mm)'));
-
-  // Low Caliper bracket: ~22mm (2 fingers)
-  caliperGroup.appendChild(svgEl('path', { class: 'caliper-bracket', d: 'M 65 325 L 57 325 L 57 365 L 65 365' }));
-  caliperGroup.appendChild(svgEl('text', { class: 'caliper-label', x: '54', y: '348', 'text-anchor': 'end' }, '2 fingers (~22mm)'));
-
-  g.appendChild(caliperGroup);
 
   svg.appendChild(g);
 }

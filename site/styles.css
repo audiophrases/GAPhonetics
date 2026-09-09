@@ -606,36 +606,10 @@ body {
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.jaw-caliper {
-  pointer-events: none;
-}
-
-.caliper-bracket {
-  fill: none;
-  stroke: #64748b;
-  stroke-width: 1.5;
-}
-
-.caliper-label {
-  font-family: var(--sans);
-  font-size: 8.5px;
-  font-weight: 700;
-  fill: #64748b;
-  letter-spacing: 0.02em;
-}
-
 .vt-larynx {
   fill: none;
   stroke: #0284c7;
   stroke-width: 2.5;
-}
-
-.vt-compass__text {
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 800;
-  fill: #2563eb;
-  letter-spacing: 0.02em;
 }
 
 .vt-callout__title {
