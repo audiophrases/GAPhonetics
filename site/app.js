@@ -7,6 +7,7 @@ const state = {
   selected: null,
   hover: null,
   showLabels: true,
+  showWords: true,
   showGlides: true,
   anatomyMode: 'subtle', // 'subtle' | 'full' | 'off'
   activeFilter: 'all',
@@ -58,6 +59,24 @@ const CHART_LABEL_OVERRIDES = {
   'ɑ2': 'ɑ'
 };
 
+const ANCHOR_WORDS = {
+  'i': 'be',
+  'ɪ': 'sit',
+  'ɝ': 'bird',
+  'ɚ': 'actor',
+  'u': 'shoe',
+  'ʊ': 'foot',
+  'eɪ': 'day',
+  'ɛ': 'bed',
+  'ʌ': 'sun',
+  'ə': 'ago',
+  'oʊ': 'no',
+  'ɔ': 'dog',
+  'æ': 'hat',
+  'ɑ': 'sky',
+  'ɑ2': 'top'
+};
+
 const CHART_SHEET = {
   'i':  { row: 'high', col: 'front',   u: 0.54, v: 0.20 },
   'ɪ':  { row: 'high', col: 'front',   u: 0.54, v: 0.56 },
@@ -78,15 +97,15 @@ const CHART_SHEET = {
   'ɑ2': { row: 'low',  col: 'back',    u: 0.46, v: 0.74 }
 };
 
-const SEGMENT_KEY_PREFS = {
-  'high-front': ['ɪ', 'i'],
-  'mid-front': ['ɛ'],
-  'high-back': ['ʊ', 'u'],
-  'mid-back': ['ɔ'],
-  'mid-central': ['ə', 'ʌ'],
-  'low-front': ['ɑ', 'æ'],
-  'low-back': ['ɑ2'],
-  'low-central': ['ɑ']
+const TONGUE_POSTURES = {
+  'high-front': `M 75 145 C 88 115 105 65 145 60 C 190 55 240 88 280 135 C 330 180 365 240 365 285 C 360 312 335 325 315 328 C 240 318 160 290 110 240 C 85 200 75 165 75 145 Z`,
+  'mid-front':  `M 75 145 C 92 130 120 108 155 105 C 200 100 245 125 285 158 C 330 195 365 245 365 285 C 360 312 335 325 315 328 C 240 318 160 290 110 240 C 85 200 75 165 75 145 Z`,
+  'low-front':  `M 75 148 C 100 152 140 170 180 185 C 220 200 260 215 300 225 C 340 235 365 260 365 285 C 360 312 335 325 315 328 C 240 318 160 290 110 240 C 85 200 75 165 75 145 Z`,
+  'high-back':  `M 75 145 C 100 145 135 150 180 150 C 230 150 280 105 330 70 C 365 52 388 68 382 118 C 375 190 370 250 365 285 C 360 312 335 325 315 328 C 240 318 160 290 110 240 C 85 200 75 165 75 145 Z`,
+  'mid-back':   `M 75 145 C 100 145 140 150 185 155 C 235 160 280 140 330 130 C 362 125 378 150 374 192 C 368 235 366 265 365 285 C 360 312 335 325 315 328 C 240 318 160 290 110 240 C 85 200 75 165 75 145 Z`,
+  'low-back':   `M 75 148 C 105 150 150 160 195 180 C 240 200 285 210 325 215 C 355 220 370 245 368 275 C 365 295 345 320 315 328 C 240 318 160 290 110 240 C 85 200 75 165 75 145 Z`,
+  'rhotic':     `M 75 145 C 95 122 120 85 150 80 C 175 75 205 108 245 92 C 285 78 325 105 350 148 C 368 190 368 245 365 285 C 360 312 335 325 315 328 C 240 318 160 290 110 240 C 85 200 75 165 75 145 Z`,
+  'central':    `M 75 145 C 95 140 125 125 165 120 C 215 115 265 125 305 145 C 345 170 370 220 365 280 C 360 310 335 325 315 328 C 240 318 160 290 110 240 C 85 200 75 165 75 145 Z`
 };
 
 function lerp(a, b, t) {
@@ -193,49 +212,52 @@ function isDiphthongLike(p = {}) {
   return t.includes('→') || String(p.type || '').toLowerCase().includes('diphthong');
 }
 
-function canonicalMonophthongForSegment(segment) {
-  const prefs = SEGMENT_KEY_PREFS[segment] || [];
-
-  for (const key of prefs) {
-    const p = state.byKey.get(key);
-    if (p && !isDiphthongLike(p)) return key;
-  }
-
-  for (const p of state.phonemes) {
-    if (isDiphthongLike(p)) continue;
-    const base = normalizeTongueLabel(p.tongue).split('→')[0].replace('+r', '').trim();
-    if (base === segment) return p.key;
-  }
-
-  return null;
+function resolvePostureKey(p) {
+  if (!p) return 'central';
+  const t = normalizeTongueLabel(p.tongue || '');
+  if (p.rhotic || t.includes('+r')) return 'rhotic';
+  if (t.includes('high-front')) return 'high-front';
+  if (t.includes('mid-front')) return 'mid-front';
+  if (t.includes('low-front')) return 'low-front';
+  if (t.includes('high-back')) return 'high-back';
+  if (t.includes('mid-back')) return 'mid-back';
+  if (t.includes('low-back')) return 'low-back';
+  return 'central';
 }
 
-function relatedMonophthongKeys(key) {
-  const p = state.byKey.get(key);
-  if (!p) return [];
-
-  // If explicit glide path exists, use that
-  if (p.glide?.path) {
-    return p.glide.path;
+function resolveLipIcon(lips = '') {
+  const l = String(lips || '').toLowerCase();
+  if (l.includes('round') && !l.includes('unround')) {
+    // Rounded lips: small circle aperture
+    return `
+      <svg viewBox="0 0 20 12" class="lipIcon lipIcon--round" aria-label="Rounded lips">
+        <ellipse cx="10" cy="6" rx="8" ry="5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <ellipse cx="10" cy="6" rx="3.5" ry="2.5" fill="currentColor"/>
+      </svg>
+    `;
   }
-
-  if (!isDiphthongLike(p)) return [];
-
-  const normalized = normalizeTongueLabel(p.tongue).replace(/\+r/g, '');
-  if (!normalized.includes('→')) return [];
-
-  const segments = normalized.split('→').map((s) => s.trim()).filter(Boolean);
-  const keys = segments
-    .map((seg) => canonicalMonophthongForSegment(seg))
-    .filter(Boolean);
-
-  return [...new Set(keys)];
+  if (l.includes('unround')) {
+    // Unrounded / spread lips: smile slit
+    return `
+      <svg viewBox="0 0 20 12" class="lipIcon lipIcon--spread" aria-label="Unrounded spread lips">
+        <path d="M 2 6 Q 10 1.5 18 6 Q 10 10.5 2 6 Z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="4" y1="6" x2="16" y2="6" stroke="currentColor" stroke-width="1.4"/>
+      </svg>
+    `;
+  }
+  // Neutral lips
+  return `
+    <svg viewBox="0 0 20 12" class="lipIcon lipIcon--neutral" aria-label="Neutral lips">
+      <path d="M 3 6 Q 10 3.5 17 6 Q 10 8.5 3 6 Z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    </svg>
+  `;
 }
 
 function el(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs || {})) {
     if (k === 'class') node.className = v;
+    else if (k === 'innerHTML') node.innerHTML = v;
     else if (k.startsWith('on') && typeof v === 'function') node.addEventListener(k.slice(2), v);
     else if (v === true) node.setAttribute(k, '');
     else if (v !== false && v != null) node.setAttribute(k, String(v));
@@ -265,7 +287,6 @@ function svgEl(tag, attrs = {}, ...children) {
 
 /* ==========================================================================
    VOCAL TRACT SAGITTAL ANATOMY DRAWING
-   Maps to quadrilateral: Left=Front(Teeth), Right=Back(Throat), Top=Roof, Bottom=Floor
    ========================================================================== */
 function drawVocalTractAnatomy(svg) {
   if (state.anatomyMode === 'off') return;
@@ -275,7 +296,7 @@ function drawVocalTractAnatomy(svg) {
     'aria-hidden': 'true'
   });
 
-  // Soft background tint representing head tissue
+  // Tissue background
   g.appendChild(svgEl('path', {
     class: 'vt-tissue',
     d: `
@@ -293,7 +314,7 @@ function drawVocalTractAnatomy(svg) {
     `
   }));
 
-  // Sagittal Head Outline (Front profile facing Left)
+  // Facial Profile facing Left
   g.appendChild(svgEl('path', {
     class: 'vt-profile',
     d: `
@@ -307,7 +328,7 @@ function drawVocalTractAnatomy(svg) {
     `
   }));
 
-  // Upper & Lower Lips vermilion
+  // Lips Vermilion
   g.appendChild(svgEl('path', {
     class: 'vt-lips',
     d: `
@@ -316,7 +337,7 @@ function drawVocalTractAnatomy(svg) {
     `
   }));
 
-  // Teeth (Upper incisors at ~ (65, 115) and Lower incisors at ~ (68, 145))
+  // Teeth
   g.appendChild(svgEl('polygon', {
     class: 'vt-teeth',
     points: '64,104 74,105 72,122 65,122'
@@ -326,7 +347,7 @@ function drawVocalTractAnatomy(svg) {
     points: '67,138 73,138 72,152 66,152'
   }));
 
-  // Roof of the Mouth: Alveolar Ridge -> Hard Palate -> Velum -> Uvula
+  // Hard Palate & Alveolar Ridge
   g.appendChild(svgEl('path', {
     class: 'vt-palate',
     d: `
@@ -340,7 +361,7 @@ function drawVocalTractAnatomy(svg) {
     `
   }));
 
-  // Pharyngeal Wall (Back wall of throat)
+  // Pharyngeal Wall
   g.appendChild(svgEl('path', {
     class: 'vt-pharynx',
     d: `
@@ -351,7 +372,7 @@ function drawVocalTractAnatomy(svg) {
     `
   }));
 
-  // Lower Jaw / Floor of mouth / Sublingual
+  // Mandible
   g.appendChild(svgEl('path', {
     class: 'vt-mandible',
     d: `
@@ -362,22 +383,19 @@ function drawVocalTractAnatomy(svg) {
     `
   }));
 
-  // Tongue Body Silhouette (translucent mass filling oral cavity)
+  // Dynamic Morphing Tongue Posture
+  const activeKey = state.hover || state.selected;
+  const activeP = state.byKey.get(activeKey);
+  const postureKey = resolvePostureKey(activeP);
+  const tongueD = TONGUE_POSTURES[postureKey] || TONGUE_POSTURES.central;
+
   g.appendChild(svgEl('path', {
-    class: 'vt-tongue',
-    d: `
-      M 75 145
-      C 95 140 120 125 150 120
-      C 200 115 250 125 290 145
-      C 340 170 375 220 370 280
-      C 365 310 340 325 315 328
-      C 240 318 160 290 110 240
-      C 85 200 75 165 75 145
-      Z
-    `
+    id: 'dynamicTongue',
+    class: 'vt-tongue vt-tongue--active',
+    d: tongueD
   }));
 
-  // Vocal folds / Glottis & Epiglottis marker (throat origin of sound)
+  // Larynx
   g.appendChild(svgEl('path', {
     class: 'vt-larynx',
     d: `
@@ -386,12 +404,12 @@ function drawVocalTractAnatomy(svg) {
     `
   }));
 
-  // Direction Compass / Facing Indicator
-  const compass = svgEl('g', { class: 'vt-compass', transform: 'translate(32, 340)' });
-  compass.appendChild(svgEl('text', { class: 'vt-compass__text', x: '0', y: '0' }, '🗣 Speaker faces LEFT (Teeth/Lips)'));
+  // Speaker Orientation Indicator
+  const compass = svgEl('g', { class: 'vt-compass', transform: 'translate(32, 342)' });
+  compass.appendChild(svgEl('text', { class: 'vt-compass__text', x: '0', y: '0' }, '🗣 Facing LEFT (Lips/Teeth)'));
   g.appendChild(compass);
 
-  // Anatomical Callout Pills & Text
+  // Anatomical Callout Labels
   const callouts = [
     { x: 42, y: 76, label: 'LIPS & TEETH', sub: '(Front)', anchor: 'middle' },
     { x: 175, y: 18, label: 'HARD PALATE', sub: '(Roof / High)', anchor: 'middle' },
@@ -416,13 +434,29 @@ function drawVocalTractAnatomy(svg) {
     g.appendChild(textGroup);
   });
 
+  // Vertical Jaw Drop Caliper along the High-Mid-Low Axis
+  const caliperGroup = svgEl('g', { class: 'jaw-caliper', 'aria-label': 'Jaw opening gauge' });
+
+  // High Caliper bracket: ~2mm
+  caliperGroup.appendChild(svgEl('path', { class: 'caliper-bracket', d: 'M 48 68 L 42 68 L 42 96 L 48 96' }));
+  caliperGroup.appendChild(svgEl('text', { class: 'caliper-label', x: '40', y: '84', 'text-anchor': 'end' }, '1-2mm (Closed)'));
+
+  // Mid Caliper bracket: ~12mm (1 finger)
+  caliperGroup.appendChild(svgEl('path', { class: 'caliper-bracket', d: 'M 48 172 L 42 172 L 42 204 L 48 204' }));
+  caliperGroup.appendChild(svgEl('text', { class: 'caliper-label', x: '40', y: '190', 'text-anchor': 'end' }, '1 finger (~12mm)'));
+
+  // Low Caliper bracket: ~22mm (2 fingers)
+  caliperGroup.appendChild(svgEl('path', { class: 'caliper-bracket', d: 'M 54 276 L 48 276 L 48 308 L 54 308' }));
+  caliperGroup.appendChild(svgEl('text', { class: 'caliper-label', x: '46', y: '294', 'text-anchor': 'end' }, '2 fingers (~22mm)'));
+
+  g.appendChild(caliperGroup);
+
   svg.appendChild(g);
 }
 
 function drawSlotGrid(svg) {
   const g = getDiagramGuides();
 
-  // High/Mid and Mid/Low separators
   [g.mid, g.low].forEach(({ left, right }) => {
     svg.appendChild(svgEl('line', {
       class: 'slot-grid-line',
@@ -433,7 +467,6 @@ function drawSlotGrid(svg) {
     }));
   });
 
-  // Front/Central divider (diagonal) and Central/Back divider
   [
     [g.frontTop, g.frontBottom],
     [g.backTop, g.backBottom]
@@ -448,9 +481,6 @@ function drawSlotGrid(svg) {
   });
 }
 
-/* ==========================================================================
-   DIPHTHONG & RHOTIC GLIDE TRAJECTORY ARROW DRAWING
-   ========================================================================== */
 function drawGlideTrajectories(svg) {
   if (!state.showGlides) return;
 
@@ -496,7 +526,6 @@ function drawGlideTrajectories(svg) {
     const p1 = points[i];
     const p2 = points[i + 1];
 
-    // Curve slightly outward to avoid hitting labels
     const midX = (p1.x + p2.x) / 2 + (p1.y - p2.y) * 0.12;
     const midY = (p1.y + p2.y) / 2 + (p2.x - p1.x) * 0.12;
 
@@ -511,7 +540,6 @@ function drawGlideTrajectories(svg) {
 
     group.appendChild(path);
 
-    // Pulse dot at start
     group.appendChild(svgEl('circle', {
       class: 'glide-pulse-dot',
       cx: p1.x,
@@ -520,7 +548,6 @@ function drawGlideTrajectories(svg) {
       fill: '#e11d48'
     }));
 
-    // Midpoint trajectory label
     const labelBg = svgEl('rect', {
       class: 'glide-badge-bg',
       x: midX - 22,
@@ -543,9 +570,6 @@ function drawGlideTrajectories(svg) {
   svg.appendChild(group);
 }
 
-/* ==========================================================================
-   VOWEL COMPARISON DISTANCE VECTOR DRAWING
-   ========================================================================== */
 function drawCompareVector(svg) {
   if (!state.compareMode) return;
 
@@ -610,14 +634,29 @@ function renderTileChart() {
     'aria-label': 'Vowel quadrilateral with anatomical vocal tract cross-section'
   });
 
-  // Layer 1: Anatomical Vocal Tract Cross Section (sagittal view)
+  // Acoustic Resonance Heatmap Gradient definition
+  const defs = svgEl('defs');
+  const grad = svgEl('linearGradient', {
+    id: 'acousticGradient',
+    x1: '0%',
+    y1: '0%',
+    x2: '100%',
+    y2: '0%'
+  });
+  grad.appendChild(svgEl('stop', { offset: '0%', 'stop-color': '#0284c7', 'stop-opacity': '0.12' }));
+  grad.appendChild(svgEl('stop', { offset: '50%', 'stop-color': '#8b5cf6', 'stop-opacity': '0.04' }));
+  grad.appendChild(svgEl('stop', { offset: '100%', 'stop-color': '#f43f5e', 'stop-opacity': '0.14' }));
+  defs.appendChild(grad);
+  svg.appendChild(defs);
+
+  // Layer 1: Anatomical Vocal Tract Cross Section
   drawVocalTractAnatomy(svg);
 
-  // Layer 2: Quadrilateral Boundary
+  // Layer 2: Quadrilateral Boundary with Acoustic resonance tint
   svg.appendChild(svgEl('path', {
     class: 'guide',
     d: `M ${tl.x} ${tl.y} L ${tr.x} ${tr.y} L ${br.x} ${br.y} L ${bl.x} ${bl.y} Z`,
-    fill: 'none',
+    fill: 'url(#acousticGradient)',
     stroke: 'rgba(17,24,39,.85)',
     'stroke-width': '2.25'
   }));
@@ -625,7 +664,7 @@ function renderTileChart() {
   // Layer 3: Grid Partitions
   drawSlotGrid(svg);
 
-  // Axis Labels
+  // Axis Labels with acoustic/anatomical hints
   [
     { x: 152, y: 32, text: 'Front', cls: 'quad__label quad__label--zone' },
     { x: 252, y: 32, text: 'Central', cls: 'quad__label quad__label--zone' },
@@ -644,7 +683,7 @@ function renderTileChart() {
   drawGlideTrajectories(svg);
   drawCompareVector(svg);
 
-  // Layer 5: Phoneme Nodes
+  // Layer 5: Phoneme Nodes with Anchor Words & Lip Indicators
   const chartPhonemes = CHART_NODE_KEYS
     .map((key) => state.byKey.get(key))
     .filter(Boolean);
@@ -670,11 +709,26 @@ function renderTileChart() {
       'aria-label': `Vowel /${p.ipa}/ (${p.tongue || ''})`
     });
 
-    node.appendChild(svgEl('circle', { class: 'vowel-node__dot', cx: '0', cy: '0', r: '12' }));
+    const isRounded = String(p.lips || '').toLowerCase().includes('round') && !String(p.lips || '').toLowerCase().includes('unround');
+
+    node.appendChild(svgEl('circle', {
+      class: `vowel-node__dot ${isRounded ? 'vowel-node__dot--rounded' : ''}`,
+      cx: '0',
+      cy: '0',
+      r: '12'
+    }));
 
     if (state.showLabels) {
       const label = CHART_LABEL_OVERRIDES[p.key] || p.display || p.ipa;
       node.appendChild(svgEl('text', { class: 'vowel-node__ipa', x: '0', y: '1.5' }, label));
+    }
+
+    // Anchor word label directly below node
+    if (state.showWords) {
+      const anchorWord = ANCHOR_WORDS[p.key] || (p.example || [])[0] || '';
+      if (anchorWord) {
+        node.appendChild(svgEl('text', { class: 'vowel-node__word', x: '0', y: '19' }, anchorWord));
+      }
     }
 
     // Comparison tags A / B
@@ -712,6 +766,8 @@ function renderTable() {
     if (isCompA) trClasses.push('is-compare-a');
     if (isCompB) trClasses.push('is-compare-b');
 
+    const lipIconHtml = resolveLipIcon(p.lips);
+
     const tr = el('tr', { 'data-key': p.key, class: trClasses.join(' ') },
       el('td', {},
         el('code', { class: 'sym-code' }, `/${p.ipa}/`),
@@ -720,7 +776,9 @@ function renderTable() {
       ),
       el('td', {}, (p.example || []).join(', ')),
       el('td', {}, p.tongue || ''),
-      el('td', {}, p.lips || ''),
+      el('td', {},
+        el('span', { class: 'lipCell', innerHTML: `${lipIconHtml} <span>${p.lips || ''}</span>` })
+      ),
       el('td', {}, p.length || p.type || '')
     );
 
@@ -728,7 +786,6 @@ function renderTable() {
     tr.addEventListener('mouseleave', () => setHover(null));
     tr.addEventListener('click', () => {
       if (state.compareMode) {
-        // If clicking while compare mode is active, set B if A is already chosen
         if (state.selected === p.key) {
           state.compareB = p.key;
         } else {
@@ -868,9 +925,6 @@ function playButton(label, url, enabled = true) {
   return btn;
 }
 
-/* ==========================================================================
-   DETAILS RENDERING: SINGLE PHONEME vs COMPARISON MODE
-   ========================================================================== */
 function renderDetails() {
   const root = $('#details');
 
@@ -894,6 +948,8 @@ function renderDetails() {
 
   root.innerHTML = '';
 
+  const lipIconHtml = resolveLipIcon(p.lips);
+
   // Top header with big symbol + display name
   const header = el('div', { class: 'card__header' },
     el('div', { class: 'card__sym' }, `/${p.ipa}/`),
@@ -901,7 +957,7 @@ function renderDetails() {
       el('div', { class: 'card__type' }, p.tongue || p.type || 'Monophthong'),
       el('div', { class: 'card__badges' },
         el('span', { class: 'badge' }, 'IPA: ', el('code', {}, p.ipa)),
-        el('span', { class: 'badge' }, 'Lips: ', el('strong', {}, p.lips || 'unrounded')),
+        el('span', { class: 'badge', innerHTML: `Lips: ${lipIconHtml} <strong>${p.lips || 'unrounded'}</strong>` }),
         el('span', { class: 'badge' }, 'Length: ', el('strong', {}, p.length || 'normal')),
         p.rhotic ? el('span', { class: 'badge badge--rhotic' }, 'Rhotic (/r/)') : null
       )
@@ -952,7 +1008,7 @@ function renderDetails() {
         el('div', { class: 'artItem__desc' }, art.jaw || 'Neutral jaw opening.')
       ),
       el('div', { class: 'artItem' },
-        el('div', { class: 'artItem__title' }, '👄 Lip Posture'),
+        el('div', { class: 'artItem__title', innerHTML: `👄 Lip Posture & Aperture ${lipIconHtml}` }, ''),
         el('div', { class: 'artItem__desc' }, art.lips || p.lips || 'Unrounded / neutral.')
       ),
       art.cue ? el('div', { class: 'artItem artItem--cue' },
@@ -1004,7 +1060,6 @@ function renderCompareCard(root) {
   );
   root.appendChild(compHeader);
 
-  // Two Column Comparison
   const columns = el('div', { class: 'compareColumns' },
     // Col A
     el('div', { class: 'compCol compCol--a' },
@@ -1013,7 +1068,7 @@ function renderCompareCard(root) {
         el('span', { class: 'compSym' }, `/${pA.ipa}/`)
       ),
       el('div', { class: 'compProp' }, el('strong', {}, 'Tongue: '), pA.tongue || '—'),
-      el('div', { class: 'compProp' }, el('strong', {}, 'Lips: '), pA.lips || '—'),
+      el('div', { class: 'compProp', innerHTML: `<strong>Lips:</strong> ${resolveLipIcon(pA.lips)} ${pA.lips || '—'}` }),
       el('div', { class: 'compProp' }, el('strong', {}, 'Type: '), pA.type || pA.length || '—'),
       el('div', { class: 'compCue' }, (pA.articulatory?.cue) || (pA.articulatory?.tongue) || ''),
       el('div', { class: 'compAudio' },
@@ -1031,7 +1086,7 @@ function renderCompareCard(root) {
         el('span', { class: 'compSym' }, `/${pB.ipa}/`)
       ),
       el('div', { class: 'compProp' }, el('strong', {}, 'Tongue: '), pB.tongue || '—'),
-      el('div', { class: 'compProp' }, el('strong', {}, 'Lips: '), pB.lips || '—'),
+      el('div', { class: 'compProp', innerHTML: `<strong>Lips:</strong> ${resolveLipIcon(pB.lips)} ${pB.lips || '—'}` }),
       el('div', { class: 'compProp' }, el('strong', {}, 'Type: '), pB.type || pB.length || '—'),
       el('div', { class: 'compCue' }, (pB.articulatory?.cue) || (pB.articulatory?.tongue) || ''),
       el('div', { class: 'compAudio' },
@@ -1097,6 +1152,9 @@ function setSelected(key) {
   syncHighlights();
   renderDetails();
 
+  // Re-render chart to smoothly update dynamic tongue posture
+  renderTileChart();
+
   const p = state.byKey.get(key);
   if (p) {
     primeAudio(audioUrlForPhoneme(p));
@@ -1107,24 +1165,26 @@ function setSelected(key) {
 function setHover(key) {
   state.hover = key;
   syncHighlights();
+
+  // Update dynamic tongue posture in real-time
+  const activeP = state.byKey.get(key || state.selected);
+  const tongueEl = $('#dynamicTongue');
+  if (tongueEl && activeP) {
+    const postureKey = resolvePostureKey(activeP);
+    const newD = TONGUE_POSTURES[postureKey] || TONGUE_POSTURES.central;
+    tongueEl.setAttribute('d', newD);
+  }
 }
 
 function syncHighlights() {
-  const selectedLinked = new Set(state.selected ? relatedMonophthongKeys(state.selected) : []);
-  const hoverLinked = new Set(state.hover ? relatedMonophthongKeys(state.hover) : []);
-
   // Diagram nodes
   document.querySelectorAll('.stageSvg [data-key]').forEach((node) => {
     const k = node.getAttribute('data-key');
-
     const isDirectHover = !!state.hover && state.hover === k;
-    const isLinkedHover = !isDirectHover && hoverLinked.has(k);
-
     const isDirectSelected = !!state.selected && state.selected === k;
-    const isLinkedSelected = !isDirectSelected && selectedLinked.has(k);
 
-    node.classList.toggle('is-hover', isDirectHover || isLinkedHover);
-    node.classList.toggle('is-selected', isDirectSelected || isLinkedSelected);
+    node.classList.toggle('is-hover', isDirectHover);
+    node.classList.toggle('is-selected', isDirectSelected);
   });
 
   // Table rows
@@ -1134,7 +1194,6 @@ function syncHighlights() {
   });
 }
 
-// Tooltip
 const tip = $('#tooltip');
 function showTooltip(node, p) {
   const ex = (p.example || []).slice(0, 3).join(', ');
@@ -1168,7 +1227,6 @@ function applySearch(q) {
   state.searchQuery = normalizeQuery(q);
   if (!state.searchQuery) return;
 
-  // Try by key/ipa/display first
   for (const p of state.phonemes) {
     if (
       normalizeQuery(p.key) === state.searchQuery ||
@@ -1180,7 +1238,6 @@ function applySearch(q) {
     }
   }
 
-  // Try examples
   for (const p of state.phonemes) {
     if ((p.example || []).some((w) => w.toLowerCase().includes(state.searchQuery))) {
       setSelected(p.key);
@@ -1245,7 +1302,6 @@ function initCompareControls() {
     });
   }
 
-  // Preset buttons
   $$('.btnPreset').forEach((btn) => {
     btn.addEventListener('click', () => {
       const [k1, k2] = btn.getAttribute('data-pair').split(',');
@@ -1258,7 +1314,6 @@ function initCompareControls() {
     });
   });
 
-  // Toggle compare mode
   const toggleBtn = $('#toggleCompareBtn');
   const compareSec = $('#compareSection');
   if (toggleBtn && compareSec) {
@@ -1320,7 +1375,6 @@ async function load() {
   state.phonemes = json.phonemes || [];
   state.byKey = new Map(state.phonemes.map((p) => [p.key, p]));
 
-  // Initial selection
   state.selected = state.phonemes[0]?.key || null;
 
   initCompareControls();
@@ -1329,21 +1383,26 @@ async function load() {
 
   renderAll();
 
-  // Re-render chart on resize
   window.addEventListener('resize', () => {
     renderTileChart();
     syncHighlights();
   });
 
-  // Controls
   $('#toggleLabels').addEventListener('change', (e) => {
     state.showLabels = !!e.target.checked;
     renderAll();
   });
 
+  const toggleWordsEl = $('#toggleWords');
+  if (toggleWordsEl) {
+    toggleWordsEl.addEventListener('change', (e) => {
+      state.showWords = !!e.target.checked;
+      renderAll();
+    });
+  }
+
   $('#search').addEventListener('input', (e) => applySearch(e.target.value));
 
-  // Keyboard navigation across vowel quadrilateral
   window.addEventListener('keydown', (e) => {
     if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'SELECT') return;
 
