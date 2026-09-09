@@ -502,12 +502,12 @@ function drawVocalTractAnatomy(svg) {
     `
   }));
 
-  // Anatomical Callout Labels
+  // Anatomical Callout Labels (Relocated to dedicated non-colliding zones)
   const callouts = [
-    { x: 50, y: 88, label: 'LIPS & TEETH', sub: '(Front)', anchor: 'middle' },
-    { x: 205, y: 20, label: 'HARD PALATE', sub: '(Roof / High)', anchor: 'middle' },
-    { x: 515, y: 20, label: 'VELUM & THROAT', sub: '(Soft Palate / Back)', anchor: 'end' },
-    { x: 300, y: 400, label: 'OPEN JAW & FLOOR', sub: '(Low / Depressed)', anchor: 'middle' }
+    { x: 44, y: 168, label: 'LIPS & TEETH', sub: '(Front)', anchor: 'middle' },
+    { x: 235, y: 14, label: 'HARD PALATE', sub: '(Roof / High)', anchor: 'middle' },
+    { x: 538, y: 18, label: 'VELUM & THROAT', sub: '(Soft Palate / Back)', anchor: 'middle' },
+    { x: 270, y: 396, label: 'OPEN JAW & FLOOR', sub: '(Low / Depressed)', anchor: 'middle' }
   ];
 
   callouts.forEach(({ x, y, label, sub, anchor }) => {

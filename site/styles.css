@@ -526,17 +526,22 @@ body {
   pointer-events: none;
   font-family: var(--sans);
   fill: #0f172a;
+  text-anchor: middle;
+  paint-order: stroke fill;
+  stroke: rgba(255, 255, 255, 0.9);
+  stroke-width: 3px;
+  stroke-linejoin: round;
 }
 
 .quad__label--zone {
   font-weight: 800;
-  font-size: 15px;
+  font-size: 14.5px;
   opacity: 0.95;
 }
 
 .quad__label--axis {
   font-weight: 700;
-  font-size: 13.5px;
+  font-size: 13px;
   opacity: 0.88;
   fill: #475569;
 }
@@ -627,19 +632,32 @@ body {
   stroke-width: 2.5;
 }
 
+.vt-callout {
+  pointer-events: none;
+}
+
 .vt-callout__title {
   font-family: var(--sans);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
-  fill: #475569;
-  letter-spacing: 0.04em;
+  fill: #334155;
+  letter-spacing: 0.05em;
+  paint-order: stroke fill;
+  stroke: rgba(255, 255, 255, 0.95);
+  stroke-width: 3.5px;
+  stroke-linejoin: round;
 }
 
 .vt-callout__sub {
   font-family: var(--sans);
-  font-size: 8.5px;
+  font-size: 8px;
   font-weight: 600;
   fill: #64748b;
+  letter-spacing: 0.02em;
+  paint-order: stroke fill;
+  stroke: rgba(255, 255, 255, 0.95);
+  stroke-width: 3px;
+  stroke-linejoin: round;
 }
 
 /* Vowel Diagram Nodes */
