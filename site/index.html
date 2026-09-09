@@ -3,44 +3,118 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>General American Phonetics — Interactive Charts</title>
+  <title>General American Phonetics — Interactive Charts & Vocal Tract Guide</title>
+  <meta name="description" content="Interactive General American Phonetics charts with anatomical vocal tract cross-section, vowel quadrilateral, articulatory sensation guide, diphthong glide vectors, and audio playback." />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
       <div class="brand__title">General American Phonetics</div>
-      <div class="brand__subtitle">Interactive vowel charts + reference table</div>
+      <div class="brand__subtitle">Interactive vowel charts + anatomical vocal tract guide</div>
     </div>
 
     <div class="controls" aria-label="Controls">
-      <label class="control">
-        <span>Search</span>
-        <input id="search" type="search" placeholder="/æ/  cat  bird  oʊ" autocomplete="off" />
+      <label class="control searchBox">
+        <span class="srOnly">Search phonemes</span>
+        <svg class="searchIcon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="8.5" cy="8.5" r="5.5"></circle>
+          <line x1="13" y1="13" x2="18" y2="18"></line>
+        </svg>
+        <input id="search" type="search" placeholder="Search /æ/, 'cat', 'bird', 'oʊ'..." autocomplete="off" />
       </label>
+
+      <button id="toggleCompareBtn" class="btn btn--toggle" type="button" aria-pressed="false">
+        <span class="btn__icon">⚖️</span>
+        <span>Compare Vowels</span>
+      </button>
+
       <label class="control checkbox">
         <input id="toggleLabels" type="checkbox" checked />
-        <span>Show labels</span>
+        <span>Show IPA</span>
       </label>
     </div>
   </header>
 
+  <!-- Filter chips bar -->
+  <nav class="filterBar" aria-label="Category filters">
+    <div class="filterBar__label">Filter:</div>
+    <div class="filterChips" role="group" aria-label="Phoneme classification">
+      <button class="chip is-active" data-filter="all" type="button">All (24)</button>
+      <button class="chip" data-filter="monophthong" type="button">Monophthongs</button>
+      <button class="chip" data-filter="diphthong" type="button">Diphthongs</button>
+      <button class="chip" data-filter="rhotic" type="button">Rhotic (/r/-colored)</button>
+      <button class="chip" data-filter="front" type="button">Front</button>
+      <button class="chip" data-filter="central" type="button">Central</button>
+      <button class="chip" data-filter="back" type="button">Back</button>
+    </div>
+  </nav>
+
+  <!-- Compare mode banner / toolbar (visible when compare mode is active) -->
+  <section id="compareSection" class="compareBar is-hidden" aria-label="Vowel comparison mode">
+    <div class="compareBar__inner">
+      <div class="comparePickers">
+        <div class="comparePicker comparePicker--a">
+          <label for="compareSelectA">Vowel A (Primary):</label>
+          <select id="compareSelectA"></select>
+        </div>
+        <button id="compareSwapBtn" class="btn btn--icon" type="button" title="Swap vowels" aria-label="Swap vowels">⇄</button>
+        <div class="comparePicker comparePicker--b">
+          <label for="compareSelectB">Vowel B (Contrast):</label>
+          <select id="compareSelectB"></select>
+        </div>
+        <button id="playBothBtn" class="btn btn--accent" type="button">
+          <span>▶ Play A then B</span>
+        </button>
+      </div>
+
+      <div class="comparePresets">
+        <span class="comparePresets__label">Minimal Pairs:</span>
+        <button class="btnPreset" type="button" data-pair="i,ɪ">/i/ vs /ɪ/ (sheep/ship)</button>
+        <button class="btnPreset" type="button" data-pair="ɛ,æ">/ɛ/ vs /æ/ (bed/bad)</button>
+        <button class="btnPreset" type="button" data-pair="ʊ,u">/ʊ/ vs /u/ (look/Luke)</button>
+        <button class="btnPreset" type="button" data-pair="ʌ,ɑ2">/ʌ/ vs /ɑ/ (cut/cot)</button>
+        <button class="btnPreset" type="button" data-pair="eɪ,ɛ">/eɪ/ vs /ɛ/ (pain/pen)</button>
+      </div>
+    </div>
+  </section>
+
   <main class="layout">
     <div class="leftCol" aria-label="Diagram and details">
-      <!-- CHART 1: tile map (black background, like the screenshot) -->
+      <!-- CHART 1: Vowel diagram with vocal tract underlay -->
       <section class="panel panel--chart" aria-labelledby="h-tiles">
         <div class="panel__head">
-          <h2 id="h-tiles">Vowel diagram</h2>
-          <div class="panel__hint">Interactive IPA chart (high/mid/low, front/central/back) aligned to a classic vowel quadrilateral layout.</div>
+          <div class="panel__headText">
+            <h2 id="h-tiles">Vowel Diagram & Vocal Tract Placement</h2>
+            <div class="panel__hint">
+              <strong>Facing Left:</strong> Front = Teeth & Lips | Back = Soft Palate & Throat | High = Hard Palate | Low = Open Jaw
+            </div>
+          </div>
+
+          <div class="panel__actions">
+            <!-- Anatomy opacity segmented selector -->
+            <div class="segmented" role="group" aria-label="Vocal tract anatomy transparency">
+              <span class="segmented__title">Anatomy:</span>
+              <button class="segBtn is-active" data-anatomy="subtle" type="button">Subtle</button>
+              <button class="segBtn" data-anatomy="full" type="button">Full</button>
+              <button class="segBtn" data-anatomy="off" type="button">Off</button>
+            </div>
+
+            <!-- Glides toggle button -->
+            <button id="toggleGlidesBtn" class="btn btn--small is-active" type="button" aria-pressed="true" title="Show tongue glide trajectory vectors for diphthongs and rhotic vowels">
+              ↗ Glides
+            </button>
+          </div>
         </div>
-        <div class="tileChart" id="tileChart" role="application" aria-label="Interactive vowel diagram"></div>
+
+        <div class="tileChart" id="tileChart" role="application" aria-label="Interactive vowel quadrilateral with anatomical vocal tract cross-section"></div>
       </section>
 
-      <!-- SIDE: details card -->
+      <!-- SIDE: details card / comparison card -->
       <aside class="panel panel--details" aria-labelledby="h-details">
         <div class="panel__head">
-          <h2 id="h-details">Phoneme</h2>
-          <div class="panel__hint">Selected item details.</div>
+          <h2 id="h-details">Phoneme Details</h2>
+          <div class="panel__hint">Articulatory placement, sensation cue, and audio recordings.</div>
         </div>
 
         <div class="card" id="details">
@@ -48,8 +122,10 @@
         </div>
 
         <div class="legend">
-          <div class="legend__row"><span class="swatch swatch--sel"></span> selected</div>
-          <div class="legend__row"><span class="swatch swatch--hover"></span> hover</div>
+          <div class="legend__row"><span class="swatch swatch--sel"></span> Selected (Click)</div>
+          <div class="legend__row"><span class="swatch swatch--hover"></span> Hover</div>
+          <div class="legend__row"><span class="swatch swatch--glide"></span> Diphthong / Rhotic Glide</div>
+          <div class="legend__row compareOnly is-hidden"><span class="swatch swatch--compB"></span> Vowel B (Contrast)</div>
         </div>
       </aside>
     </div>
@@ -57,18 +133,21 @@
     <!-- CHART 2: table (symbol/example/tongue/lips/length) -->
     <section class="panel panel--table" aria-labelledby="h-table">
       <div class="panel__head">
-        <h2 id="h-table">Reference table</h2>
-        <div class="panel__hint">Click a row to select the phoneme.</div>
+        <div class="panel__headText">
+          <h2 id="h-table">Reference Table</h2>
+          <div class="panel__hint">Click any row to inspect articulatory placement and play audio.</div>
+        </div>
+        <div class="tableCount" id="tableCount">24 vowels</div>
       </div>
       <div class="tableWrap" role="region" aria-label="Phoneme reference table">
         <table class="refTable" id="refTable">
           <thead>
             <tr>
-              <th>Symbol</th>
-              <th>Example</th>
-              <th>Tongue</th>
-              <th>Lips</th>
-              <th>Length</th>
+              <th scope="col">Symbol</th>
+              <th scope="col">Example</th>
+              <th scope="col">Tongue Position</th>
+              <th scope="col">Lips</th>
+              <th scope="col">Type / Length</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -77,7 +156,7 @@
     </section>
 
     <footer class="footer">
-      <div>Data is editable in <code>data/phonemes.json</code>. Add audio files under <code>audio/</code> to enable playback.</div>
+      <div>General American Phonetics Interactive Reference • Data editable in <code>data/phonemes.json</code> • Audio recordings in <code>audio/</code></div>
     </footer>
   </main>
 

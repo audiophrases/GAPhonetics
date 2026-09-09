@@ -31,6 +31,12 @@
         "col": "front",
         "dx": 27,
         "dy": 11
+      },
+      "articulatory": {
+        "tongue": "High Front: Tongue blade arches high toward the hard palate near the alveolar ridge.",
+        "jaw": "High / nearly closed (narrow gap between incisors).",
+        "lips": "Unrounded, spread into a slight smile.",
+        "cue": "Sides of the tongue press firmly against upper molars. Pharynx and throat cavity stay wide and relaxed."
       }
     },
     {
@@ -59,6 +65,12 @@
         "col": "front",
         "dx": 51,
         "dy": 43
+      },
+      "articulatory": {
+        "tongue": "High-Mid Front (Lax): Tongue body is slightly lower and more central than /i/, with relaxed muscle tension.",
+        "jaw": "Slightly more open than /i/ (relaxed jaw drop).",
+        "lips": "Unrounded and relaxed.",
+        "cue": "Relax the tongue and jaw from the /i/ position. Sound feels centered in the high-front mouth."
       }
     },
     {
@@ -87,6 +99,20 @@
         "col": "front",
         "dx": 81,
         "dy": 61
+      },
+      "articulatory": {
+        "tongue": "Starts in high-front /ɪ/ position, then tongue body retracts and curls/bunches into the rhotic pocket.",
+        "jaw": "Narrow to mid opening.",
+        "lips": "Unrounded, transitioning to slight lip flare.",
+        "cue": "Tongue sweeps from high-front lax position backward toward the palate for the /r/ finish."
+      },
+      "glide": {
+        "from": "ɪ",
+        "to": "ɚ",
+        "path": [
+          "ɪ",
+          "ɚ"
+        ]
       }
     },
     {
@@ -116,6 +142,20 @@
         "col": "front",
         "dx": 52,
         "dy": -16
+      },
+      "articulatory": {
+        "tongue": "Diphthong Glide: Starts at mid-front /e/ and moves smoothly upward toward high-front /ɪ/.",
+        "jaw": "Starts mid-open and raises upward as the glide finishes.",
+        "lips": "Unrounded, spreading progressively wider.",
+        "cue": "Feel the upward jaw movement and tongue blade gliding upward toward the hard palate."
+      },
+      "glide": {
+        "from": "eɪ",
+        "to": "ɪ",
+        "path": [
+          "eɪ",
+          "ɪ"
+        ]
       }
     },
     {
@@ -145,6 +185,12 @@
         "col": "front",
         "dx": 53,
         "dy": 24
+      },
+      "articulatory": {
+        "tongue": "Mid Front: Tongue body sits at half-height in the front oral cavity, below the hard palate.",
+        "jaw": "Mid-open (approx. one finger width between front teeth).",
+        "lips": "Unrounded and neutral.",
+        "cue": "Tongue blade is arched mid-level; sides lightly contact upper rear teeth."
       }
     },
     {
@@ -174,6 +220,20 @@
         "col": "front",
         "dx": 90,
         "dy": 18
+      },
+      "articulatory": {
+        "tongue": "Starts at mid-front /ɛ/ and glides directly into the bunched or retroflex rhotic /r/.",
+        "jaw": "Mid-open, closing slightly during the glide.",
+        "lips": "Neutral, transitioning to slight lip protrusion.",
+        "cue": "Hold the open /ɛ/ position, then bunch the back of the tongue or curl the tip for the rhotic resonance."
+      },
+      "glide": {
+        "from": "ɛ",
+        "to": "ɚ",
+        "path": [
+          "ɛ",
+          "ɚ"
+        ]
       }
     },
     {
@@ -204,6 +264,12 @@
         "col": "central",
         "dx": 8,
         "dy": 16
+      },
+      "articulatory": {
+        "tongue": "Stressed Rhotic: Tongue body bunches high in the central palate with tip curled (retroflex) or bunched back.",
+        "jaw": "Mid-high opening with active muscular tension.",
+        "lips": "Moderately rounded with slight flaring of lips.",
+        "cue": "Dual constriction in palate and pharynx creates the strong General American /r/ acoustic resonance."
       }
     },
     {
@@ -233,6 +299,12 @@
         "col": "central",
         "dx": 35,
         "dy": 16
+      },
+      "articulatory": {
+        "tongue": "Unstressed Rhotic (schwa+r): Same bunched or retroflex posture as /ɝ/, but quick, unstressed, and light.",
+        "jaw": "Mid, relaxed opening.",
+        "lips": "Neutral to slightly rounded.",
+        "cue": "Unstressed syllables (water, actor). Tongue touches the rhotic pocket lightly and briefly."
       }
     },
     {
@@ -264,6 +336,12 @@
         "col": "central",
         "dx": 27,
         "dy": 32
+      },
+      "articulatory": {
+        "tongue": "Low-Front/Central Anchor [a]: Lowest point of the front-to-back arc, starting anchor for /aɪ/ and /aʊ/.",
+        "jaw": "Wide open (two finger widths).",
+        "lips": "Unrounded and neutral.",
+        "cue": "Open base anchor sound for General American open diphthongs."
       }
     },
     {
@@ -295,6 +373,12 @@
         "col": "back",
         "dx": 10,
         "dy": 25
+      },
+      "articulatory": {
+        "tongue": "High Back: Tongue dorsum arches high toward the velum (soft palate) at the back of the mouth.",
+        "jaw": "High / almost closed.",
+        "lips": "Tightly rounded and protruded into a small circle.",
+        "cue": "Tongue pulls far back toward the soft palate/uvula while lips make a tight circular tube."
       }
     },
     {
@@ -325,6 +409,12 @@
         "col": "back",
         "dx": -10,
         "dy": 57
+      },
+      "articulatory": {
+        "tongue": "High-Mid Back (Lax): Tongue dorsum is slightly lower and less retracted than /u/, muscles relaxed.",
+        "jaw": "Slightly more open than /u/.",
+        "lips": "Loosely rounded, not tightly pursed.",
+        "cue": "Relax lips and tongue from the /u/ position (foot, look, put)."
       }
     },
     {
@@ -353,6 +443,20 @@
         "col": "back",
         "dx": 16,
         "dy": 71
+      },
+      "articulatory": {
+        "tongue": "Starts in high-back lax /ʊ/ position and transitions into central rhotic bunched /r/.",
+        "jaw": "Mid-narrow opening.",
+        "lips": "Rounded, maintaining active lip engagement throughout.",
+        "cue": "Glides from rounded back cavity inward to the central rhotic constriction (tour, cure)."
+      },
+      "glide": {
+        "from": "ʊ",
+        "to": "ɚ",
+        "path": [
+          "ʊ",
+          "ɚ"
+        ]
       }
     },
     {
@@ -382,6 +486,12 @@
         "col": "central",
         "dx": 19,
         "dy": 56
+      },
+      "articulatory": {
+        "tongue": "Mid Central / Back-Central (Stressed): Tongue body sits at relaxed mid height, slightly back of center.",
+        "jaw": "Mid-low opening, relaxed mandible.",
+        "lips": "Completely unrounded and neutral.",
+        "cue": "Short, punchy stressed vowel in the center-back of the mouth (sun, cup, blood)."
       }
     },
     {
@@ -411,6 +521,12 @@
         "col": "central",
         "dx": 31,
         "dy": 28
+      },
+      "articulatory": {
+        "tongue": "Mid Central (Schwa): Neutral vocal tract; tongue rests in the exact center of the mouth without tension.",
+        "jaw": "Mid-neutral, minimum muscular effort.",
+        "lips": "Completely relaxed, neutral.",
+        "cue": "The lazy default resting posture of English; zero muscular strain (ago, the)."
       }
     },
     {
@@ -440,6 +556,20 @@
         "col": "backCentral",
         "dx": 42,
         "dy": 0
+      },
+      "articulatory": {
+        "tongue": "Diphthong Glide: Starts at mid-back /o/ and glides upward and backward toward /ʊ/.",
+        "jaw": "Starts mid-open and raises upward.",
+        "lips": "Rounded at start, becoming tighter and more protruded as the sound finishes.",
+        "cue": "Feel both jaw closing and lip circle shrinking as you say 'no', 'go', 'boat'."
+      },
+      "glide": {
+        "from": "oʊ",
+        "to": "ʊ",
+        "path": [
+          "oʊ",
+          "ʊ"
+        ]
       }
     },
     {
@@ -469,6 +599,12 @@
         "col": "backCentral",
         "dx": 36,
         "dy": 40
+      },
+      "articulatory": {
+        "tongue": "Mid Back (Open-Mid): Tongue body pulled back toward the posterior pharyngeal wall and lower velum.",
+        "jaw": "Mid-low opening.",
+        "lips": "Moderately rounded (oval aperture).",
+        "cue": "Acoustic resonance feels deep in the throat/pharynx with distinct lip rounding (dog, law)."
       }
     },
     {
@@ -498,6 +634,20 @@
         "col": "backCentral",
         "dx": 78,
         "dy": 53
+      },
+      "articulatory": {
+        "tongue": "Starts with rounded mid-back /ɔ/ and glides smoothly into the central rhotic bunched /r/.",
+        "jaw": "Mid-open to mid.",
+        "lips": "Maintains rounding through to the rhotic finish.",
+        "cue": "Prominent General American vowel in words like 'warm', 'door', 'form'."
+      },
+      "glide": {
+        "from": "ɔ",
+        "to": "ɚ",
+        "path": [
+          "ɔ",
+          "ɚ"
+        ]
       }
     },
     {
@@ -528,6 +678,12 @@
         "col": "front",
         "dx": 56,
         "dy": 14
+      },
+      "articulatory": {
+        "tongue": "Low Front: Tongue blade lies low and forward behind the lower teeth; pharynx narrows slightly.",
+        "jaw": "Open / low (mandible dropped wide).",
+        "lips": "Unrounded, corners pulled back slightly.",
+        "cue": "Tongue tip touches lower front teeth while tongue body stays low and flat in front (cat, hat, ash)."
       }
     },
     {
@@ -557,6 +713,20 @@
         "col": "front",
         "dx": 146,
         "dy": 60
+      },
+      "articulatory": {
+        "tongue": "Diphthong Glide: Starts low in front/center /a/ and travels diagonally upward to high-back /ʊ/.",
+        "jaw": "Drops wide open on start, then closes upward noticeably.",
+        "lips": "Starts completely unrounded/open, finishes tightly rounded.",
+        "cue": "Dramatic full-mouth articulatory travel: from wide open flat tongue to high rounded back (cow, loud)."
+      },
+      "glide": {
+        "from": "ɑ",
+        "to": "ʊ",
+        "path": [
+          "ɑ",
+          "ʊ"
+        ]
       }
     },
     {
@@ -585,6 +755,21 @@
         "col": "front",
         "dx": 172,
         "dy": 74
+      },
+      "articulatory": {
+        "tongue": "Triphthong Glide: Starts low /a/, sweeps through back /ʊ/, and finishes in central rhotic /r/.",
+        "jaw": "Wide open at start, closes upward.",
+        "lips": "Starts neutral, rounds, then relaxes into rhotic shape.",
+        "cue": "Multi-stage articulatory movement heard in words like 'hour', 'sour'."
+      },
+      "glide": {
+        "from": "ɑ",
+        "to": "ɚ",
+        "path": [
+          "ɑ",
+          "ʊ",
+          "ɚ"
+        ]
       }
     },
     {
@@ -613,6 +798,20 @@
         "col": "front",
         "dx": 91,
         "dy": 44
+      },
+      "articulatory": {
+        "tongue": "Diphthong Glide: Starts low in front/center /a/ and glides upward toward high-front /ɪ/.",
+        "jaw": "Starts wide open and closes upward toward the upper incisors.",
+        "lips": "Starts neutral/unrounded, widens into a smile.",
+        "cue": "Tongue sweeps up the front of the mouth from lowest floor to hard palate (sky, fly, time)."
+      },
+      "glide": {
+        "from": "ɑ",
+        "to": "ɪ",
+        "path": [
+          "ɑ",
+          "ɪ"
+        ]
       }
     },
     {
@@ -642,6 +841,21 @@
         "col": "front",
         "dx": 106,
         "dy": 74
+      },
+      "articulatory": {
+        "tongue": "Triphthong Glide: Starts low /a/, glides toward front /ɪ/, then sweeps to central rhotic /r/.",
+        "jaw": "Wide open, raises, then stabilizes.",
+        "lips": "Unrounded, transitions to slight rhotic posture.",
+        "cue": "Triple transition heard in 'wire', 'fire', 'tire'."
+      },
+      "glide": {
+        "from": "ɑ",
+        "to": "ɚ",
+        "path": [
+          "ɑ",
+          "ɪ",
+          "ɚ"
+        ]
       }
     },
     {
@@ -671,6 +885,12 @@
         "col": "backCentral",
         "dx": 34,
         "dy": 40
+      },
+      "articulatory": {
+        "tongue": "Low Back: Tongue body pulled all the way back and down into the lower pharynx / throat.",
+        "jaw": "Maximum low opening / wide dropped jaw.",
+        "lips": "Completely unrounded, neutral opening.",
+        "cue": "Doctor's visit 'say Ah': tongue flat and retracted low, opening the entire oral cavity (top, spa, father)."
       }
     },
     {
@@ -700,6 +920,20 @@
         "col": "backCentral",
         "dx": 88,
         "dy": 46
+      },
+      "articulatory": {
+        "tongue": "Starts at low back /ɑ/ and glides into bunched or retroflex rhotic /r/.",
+        "jaw": "Wide open at start, closes slightly.",
+        "lips": "Neutral unrounded at start, slight flare for /r/ finish.",
+        "cue": "Classic 'car', 'hard', 'arm' vowel in General American."
+      },
+      "glide": {
+        "from": "ɑ2",
+        "to": "ɚ",
+        "path": [
+          "ɑ2",
+          "ɚ"
+        ]
       }
     }
   ]
