@@ -33,3 +33,16 @@ After the first deploy, the site will be available at:
 - Word audio: `site/audio/words/<slug>.mp3`
 
 (If a file is missing, the UI will show a disabled play button.)
+
+Generate missing clips with `node tools/generate-audio.mjs` (Piper via sherpa-onnx).
+Without that runtime, `pwsh tools/generate-audio-sapi.ps1` fills in missing *word* clips
+using the Windows built-in voice.
+
+## Tests
+
+```powershell
+node --test "tests/*.test.mjs"
+```
+
+Covers the compare-mode slot logic and checks that every phoneme/example word in
+`phonemes.json` has a recording.

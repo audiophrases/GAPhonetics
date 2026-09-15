@@ -577,8 +577,9 @@
       "ipa": "ɔ",
       "display": "ɔ",
       "example": [
-        "dog",
-        "law"
+        "law",
+        "saw",
+        "caught"
       ],
       "tongue": "mid-back",
       "lips": "rounded",
@@ -604,7 +605,7 @@
         "tongue": "Mid Back (Open-Mid): Tongue body pulled back toward the posterior pharyngeal wall and lower velum.",
         "jaw": "Mid-low opening.",
         "lips": "Moderately rounded (oval aperture).",
-        "cue": "Acoustic resonance feels deep in the throat/pharynx with distinct lip rounding (dog, law)."
+        "cue": "Acoustic resonance feels deep in the throat/pharynx with distinct lip rounding (law, saw, caught)."
       }
     },
     {
@@ -820,7 +821,7 @@
       "display": "aɪr",
       "example": [
         "wire",
-        "air"
+        "fire"
       ],
       "tongue": "low-front→high-front+r",
       "lips": "unrounded",
@@ -864,7 +865,8 @@
       "display": "ɑ",
       "example": [
         "top",
-        "spa"
+        "hot",
+        "cot"
       ],
       "tongue": "low-back",
       "lips": "unrounded",
@@ -890,7 +892,7 @@
         "tongue": "Low Back: Tongue body pulled all the way back and down into the lower pharynx / throat.",
         "jaw": "Maximum low opening / wide dropped jaw.",
         "lips": "Completely unrounded, neutral opening.",
-        "cue": "Doctor's visit 'say Ah': tongue flat and retracted low, opening the entire oral cavity (top, spa, father)."
+        "cue": "Doctor's visit 'say Ah': tongue flat and retracted low, opening the entire oral cavity (top, hot, cot)."
       }
     },
     {

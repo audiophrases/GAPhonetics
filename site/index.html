@@ -60,17 +60,18 @@
     <div class="compareBar__inner">
       <div class="comparePickers">
         <div class="comparePicker comparePicker--a">
-          <span class="swatch swatch--sel" title="Primary vowel"></span>
+          <button id="armCompareA" class="swatch swatch--sel swatch--btn" type="button" title="Chart clicks replace the primary vowel" aria-label="Make chart clicks replace the primary vowel" aria-pressed="false"></button>
           <select id="compareSelectA" aria-label="Primary vowel"></select>
         </div>
         <button id="compareSwapBtn" class="btn btn--icon" type="button" title="Swap vowels" aria-label="Swap vowels">⇄</button>
         <div class="comparePicker comparePicker--b">
-          <span class="swatch swatch--compB" title="Contrast vowel"></span>
+          <button id="armCompareB" class="swatch swatch--compB swatch--btn" type="button" title="Chart clicks replace the contrast vowel" aria-label="Make chart clicks replace the contrast vowel" aria-pressed="true"></button>
           <select id="compareSelectB" aria-label="Contrast vowel"></select>
         </div>
         <button id="playBothBtn" class="btn btn--accent" type="button">
           <span>▶ Play Sequence</span>
         </button>
+        <div class="compareHint">Chart clicks fill the dashed slot. Click a highlighted vowel (or its swatch) to switch slots.</div>
       </div>
 
       <div class="comparePresets">
@@ -79,6 +80,7 @@
         <button class="btnPreset" type="button" data-pair="ɛ,æ">/ɛ/ vs /æ/ (bed/bad)</button>
         <button class="btnPreset" type="button" data-pair="ʊ,u">/ʊ/ vs /u/ (look/Luke)</button>
         <button class="btnPreset" type="button" data-pair="ʌ,ɑ2">/ʌ/ vs /ɑ/ (cut/cot)</button>
+        <button class="btnPreset" type="button" data-pair="ɑ2,ɔ">/ɑ/ vs /ɔ/ (cot/caught)</button>
         <button class="btnPreset" type="button" data-pair="eɪ,ɛ">/eɪ/ vs /ɛ/ (pain/pen)</button>
       </div>
     </div>

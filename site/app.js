@@ -1,3 +1,5 @@
+import { armCompareSide, selectDiagramVowel } from './compare-state.js';
+
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
@@ -14,6 +16,7 @@ const state = {
   compareMode: true,
   compareA: 'i',
   compareB: 'ɪ',
+  compareTarget: 'b', // 'a' | 'b' — slot replaced by the next chart/table click
   playbackRate: 1.0,
   loopCount: 1,
   activeAudio: null,
@@ -72,7 +75,7 @@ const ANCHOR_WORDS = {
   'ʌ': 'sun',
   'ə': 'ago',
   'oʊ': 'no',
-  'ɔ': 'dog',
+  'ɔ': 'law',
   'æ': 'hat',
   'ɑ': 'sky',
   'ɑ2': 'top'
@@ -768,13 +771,9 @@ function renderTileChart() {
     const { x, y } = resolveChartNodePosition(p);
     const matchesFilter = matchesActiveFilter(p);
 
-    const isCompA = state.compareMode && state.compareA === p.key;
-    const isCompB = state.compareMode && state.compareB === p.key;
-
+    // Selection / compare classes are applied by syncHighlights() after render.
     const nodeClasses = ['vowel-node'];
     if (!matchesFilter) nodeClasses.push('is-dimmed');
-    if (isCompA) nodeClasses.push('is-compare-a');
-    if (isCompB) nodeClasses.push('is-compare-b');
 
     const node = svgEl('g', {
       class: nodeClasses.join(' '),
@@ -786,6 +785,9 @@ function renderTileChart() {
     });
 
     const isRounded = String(p.lips || '').toLowerCase().includes('round') && !String(p.lips || '').toLowerCase().includes('unround');
+
+    // Outer ring marks the compare slot that chart clicks will replace (see syncHighlights)
+    node.appendChild(svgEl('circle', { class: 'vowel-node__ring', cx: '0', cy: '0', r: '17' }));
 
     node.appendChild(svgEl('circle', {
       class: `vowel-node__dot ${isRounded ? 'vowel-node__dot--rounded' : ''}`,
@@ -825,13 +827,8 @@ function renderTable() {
     const matches = matchesActiveFilter(p);
     if (matches) visibleCount++;
 
-    const isCompA = state.compareMode && state.compareA === p.key;
-    const isCompB = state.compareMode && state.compareB === p.key;
-
     const trClasses = [];
     if (!matches) trClasses.push('is-dimmed');
-    if (isCompA) trClasses.push('is-compare-a');
-    if (isCompB) trClasses.push('is-compare-b');
 
     const lipIconHtml = resolveLipIcon(p.lips);
 
@@ -847,16 +844,7 @@ function renderTable() {
 
     tr.addEventListener('mouseenter', () => setHover(p.key));
     tr.addEventListener('mouseleave', () => setHover(null));
-    tr.addEventListener('click', () => {
-      if (state.compareMode) {
-        if (state.compareA !== p.key) {
-          state.compareB = p.key;
-        }
-        syncCompareDropdowns();
-      }
-      setSelected(p.key);
-      playPhoneme(p).catch(() => {});
-    });
+    tr.addEventListener('click', () => activatePhoneme(p));
 
     tbody.appendChild(tr);
   }
@@ -1228,31 +1216,32 @@ function wireInteractive(node, p) {
     setHover(null);
     hideTooltip();
   });
-  node.addEventListener('click', () => {
-    if (state.compareMode) {
-      if (state.compareA !== p.key) {
-        state.compareB = p.key;
-      }
-      syncCompareDropdowns();
-    }
-    setSelected(p.key);
-    playPhoneme(p).catch(() => {});
-  });
+  node.addEventListener('click', () => activatePhoneme(p));
   node.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      setSelected(p.key);
-      playPhoneme(p).catch(() => {});
+      activatePhoneme(p);
     }
   });
 }
 
+// Click/Enter on a chart node or table row. In compare mode the vowel fills
+// the armed slot (B by default); clicking a vowel already in a slot arms that
+// slot instead, so either side of the comparison can be changed from the chart.
+function activatePhoneme(p) {
+  if (state.compareMode) {
+    selectDiagramVowel(state, p.key);
+    syncCompareDropdowns();
+  }
+  setSelected(p.key);
+  playPhoneme(p).catch(() => {});
+}
+
 function setSelected(key) {
   state.selected = key;
-  syncHighlights();
   renderDetails();
-
   renderTileChart();
+  syncHighlights();
 
   const p = state.byKey.get(key);
   if (p) {
@@ -1273,6 +1262,16 @@ function setHover(key) {
 }
 
 function syncHighlights() {
+  const armedKey = state.compareMode
+    ? (state.compareTarget === 'a' ? state.compareA : state.compareB)
+    : null;
+
+  const syncCompareClasses = (node, k) => {
+    node.classList.toggle('is-compare-a', state.compareMode && state.compareA === k);
+    node.classList.toggle('is-compare-b', state.compareMode && state.compareB === k);
+    node.classList.toggle('is-compare-armed', armedKey === k);
+  };
+
   document.querySelectorAll('.stageSvg [data-key]').forEach((node) => {
     const k = node.getAttribute('data-key');
     const isDirectHover = !!state.hover && state.hover === k;
@@ -1280,11 +1279,19 @@ function syncHighlights() {
 
     node.classList.toggle('is-hover', isDirectHover);
     node.classList.toggle('is-selected', isDirectSelected);
+    syncCompareClasses(node, k);
   });
 
   document.querySelectorAll('#refTable tbody tr').forEach((tr) => {
     const k = tr.getAttribute('data-key');
     tr.classList.toggle('is-selected', !!state.selected && state.selected === k);
+    syncCompareClasses(tr, k);
+  });
+
+  ['a', 'b'].forEach((side) => {
+    const armed = state.compareMode && state.compareTarget === side;
+    $(`.comparePicker--${side}`)?.classList.toggle('is-armed', armed);
+    $(`#armCompare${side.toUpperCase()}`)?.setAttribute('aria-pressed', String(armed));
   });
 }
 
@@ -1375,6 +1382,13 @@ function initCompareControls() {
       renderAll();
     });
   }
+
+  ['a', 'b'].forEach((side) => {
+    $(`#armCompare${side.toUpperCase()}`)?.addEventListener('click', () => {
+      armCompareSide(state, side);
+      syncHighlights();
+    });
+  });
 
   const swapBtn = $('#compareSwapBtn');
   if (swapBtn) {

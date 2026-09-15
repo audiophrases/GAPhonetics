@@ -315,6 +315,27 @@ body {
   border-color: #38bdf8;
 }
 
+/* Armed slot: the one chart/table clicks will replace */
+.comparePicker.is-armed select {
+  border-style: dashed;
+}
+
+.comparePicker--a.is-armed select {
+  border-color: var(--comp-a);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.35);
+}
+
+.comparePicker--b.is-armed select {
+  border-color: var(--comp-b);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.35);
+}
+
+.compareHint {
+  flex-basis: 100%;
+  font-size: 11.5px;
+  color: #94a3b8;
+}
+
 .comparePresets {
   display: flex;
   align-items: center;
@@ -766,6 +787,29 @@ body {
   fill: #f5f3ff;
 }
 
+/* Armed compare slot: rotating dashed ring outside the dot, in the slot's color.
+   (The dot's own dashed outline means "rounded lips", so the ring stays separate.) */
+.vowel-node__ring {
+  display: none;
+  fill: none;
+  stroke-width: 2;
+  stroke-dasharray: 5 3;
+  pointer-events: none;
+  animation: glideDash 2.4s linear infinite;
+}
+
+.vowel-node.is-compare-armed .vowel-node__ring {
+  display: block;
+}
+
+.vowel-node.is-compare-a .vowel-node__ring {
+  stroke: var(--comp-a);
+}
+
+.vowel-node.is-compare-b .vowel-node__ring {
+  stroke: var(--comp-b);
+}
+
 .comp-badge--a {
   fill: var(--comp-a);
 }
@@ -896,6 +940,10 @@ body {
 .refTable tbody tr.is-compare-b {
   border-left: 4px solid var(--comp-b);
   background: rgba(139, 92, 246, 0.08);
+}
+
+.refTable tbody tr.is-compare-armed {
+  border-left-style: dashed;
 }
 
 .refTable tbody tr.is-dimmed {
@@ -1297,6 +1345,26 @@ body {
 .swatch--compB {
   outline: 3px solid rgba(139, 92, 246, 0.85);
   background: #8b5cf6;
+}
+
+.swatch--btn {
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.swatch--btn:hover,
+.swatch--btn[aria-pressed="true"] {
+  transform: scale(1.2);
+}
+
+.swatch--btn[aria-pressed="true"] {
+  border-style: dashed;
+  border-color: #fff;
+}
+
+.swatch--btn:focus-visible {
+  outline-color: #38bdf8;
 }
 
 .footer {

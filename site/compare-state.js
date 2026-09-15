@@ -28,3 +28,7 @@ export function selectDiagramVowel(state, key) {
 
   return { changed: assignCompareVowel(state, key), armed: false };
 }
+
+export function armCompareSide(state, side) {
+  state.compareTarget = side === 'a' ? 'a' : 'b';
+}
