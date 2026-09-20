@@ -81,7 +81,8 @@ test('selection and reset keep independent learning state, reject invalid/self c
   const { initialConsonantState, reduceConsonants } = await helpers();
   const rows = await data();
   const initial = initialConsonantState();
-  let state = reduceConsonants(initial, { type:'select', key:'θ' }, rows);
+  let state = reduceConsonants(initial, { type:'arm', side:'a' }, rows);
+  state = reduceConsonants(state, { type:'select', key:'θ' }, rows);
   state = reduceConsonants(state, { type:'compare', key:'ð' }, rows);
   state = reduceConsonants(state, { type:'filter', field:'query', value:'zoo' }, rows);
   state = reduceConsonants(state, { type:'rate', value:0.75 }, rows);
@@ -91,7 +92,37 @@ test('selection and reset keep independent learning state, reject invalid/self c
   assert.equal(reduceConsonants(reset, { type:'select', key:'invalid' }, rows), reset);
   assert.equal(reduceConsonants(reset, { type:'compare', key:'θ' }, rows), reset);
   assert.equal(reduceConsonants(reset, { type:'rate', value:2 }, rows), reset);
-  assert.equal(reduceConsonants(reset, { type:'select', key:'ð' }, rows).compare, null);
+});
+
+test('consonant comparison state machine supports arming, swapping, and minimal pair presets', async () => {
+  const { initialConsonantState, reduceConsonants } = await helpers();
+  const rows = await data();
+  let s = initialConsonantState();
+  assert.equal(s.compareMode, true);
+  assert.equal(s.selected, 'p');
+  assert.equal(s.compare, 'b');
+
+  // Toggle off and on
+  s = reduceConsonants(s, { type: 'toggleCompare' }, rows);
+  assert.equal(s.compareMode, false);
+  s = reduceConsonants(s, { type: 'toggleCompare' }, rows);
+  assert.equal(s.compareMode, true);
+
+  // Arm slot a and select /t/
+  s = reduceConsonants(s, { type: 'arm', side: 'a' }, rows);
+  s = reduceConsonants(s, { type: 'select', key: 't' }, rows);
+  assert.equal(s.selected, 't');
+  assert.equal(s.compare, 'b');
+
+  // Swap comparison
+  s = reduceConsonants(s, { type: 'swapCompare' }, rows);
+  assert.equal(s.selected, 'b');
+  assert.equal(s.compare, 't');
+
+  // Preset pair
+  s = reduceConsonants(s, { type: 'setComparePair', a: 's', b: 'z' }, rows);
+  assert.equal(s.selected, 's');
+  assert.equal(s.compare, 'z');
 });
 
 test('mode deep links and tab arrow keys have deterministic behavior', async () => {
@@ -206,4 +237,29 @@ test('play rejection and media load error give recoverable unavailable status', 
   const retry = player.play('ok.mp3','ok',1);
   h.clips[1].onerror(); h.clips[1].resolve(); await retry;
   assert.equal(h.events.at(-1).kind, 'error');
+});
+
+
+test('hash routing: mode and optional deep-linked sound pair', async () => {
+  const { modeFromHash, pairFromHash } = await helpers();
+  assert.equal(modeFromHash(''), 'vowels');
+  assert.equal(modeFromHash('#consonants'), 'consonants');
+  assert.equal(modeFromHash('#consonants?a=ð&b=d'), 'consonants');
+  assert.equal(modeFromHash('#vowels?a=æ'), 'vowels');
+  assert.equal(pairFromHash('#vowels'), null);
+  assert.deepEqual(pairFromHash('#consonants?a=%C3%B0&b=d'), { a: 'ð', b: 'd' });
+  assert.deepEqual(pairFromHash('#vowels?a=æ'), { a: 'æ', b: null });
+  assert.equal(pairFromHash('#vowels?b=æ'), null);
+});
+
+test('setComparePair from a deep link ignores unknown or identical sounds', async () => {
+  const { initialConsonantState, reduceConsonants } = await helpers();
+  const rows = await data();
+  const linked = reduceConsonants(initialConsonantState(), { type: 'setComparePair', a: 'ð', b: 'd' }, rows);
+  assert.equal(linked.selected, 'ð');
+  assert.equal(linked.compare, 'd');
+  const same = reduceConsonants(initialConsonantState(), { type: 'setComparePair', a: 'ð', b: 'ð' }, rows);
+  assert.equal(same.selected, 'p');
+  const unknown = reduceConsonants(initialConsonantState(), { type: 'setComparePair', a: 'ð', b: 'q' }, rows);
+  assert.equal(unknown.selected, 'p');
 });

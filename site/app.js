@@ -1,4 +1,5 @@
 import { armCompareSide, selectDiagramVowel } from './compare-state.js';
+import { modeFromHash, pairFromHash } from './consonant-state.js';
 import { initConsonants } from './consonants.js';
 import { isVowelShortcut } from './consonant-state.js';
 
@@ -1513,6 +1514,17 @@ async function load() {
   state.byKey = new Map(state.phonemes.map((p) => [p.key, p]));
 
   state.selected = state.phonemes[0]?.key || null;
+
+  // A deep link (#vowels?a=æ&b=ɑ) opens straight onto that contrast.
+  const linked = modeFromHash(location.hash) === 'vowels' ? pairFromHash(location.hash) : null;
+  if (linked && state.byKey.has(linked.a)) {
+    state.selected = linked.a;
+    if (linked.b && state.byKey.has(linked.b) && linked.b !== linked.a) {
+      state.compareMode = true;
+      state.compareA = linked.a;
+      state.compareB = linked.b;
+    }
+  }
 
   initCompareControls();
   initFilterChips();

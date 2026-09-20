@@ -1,0 +1,268 @@
+{
+  "consonant_phonemes": [
+    {
+      "key": "p",
+      "ipa": "p",
+      "file_title": "File:Voiceless bilabial plosive.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiceless_bilabial_plosive.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/5/51/Voiceless_bilabial_plosive.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 1.525
+    },
+    {
+      "key": "b",
+      "ipa": "b",
+      "file_title": "File:Voiced bilabial plosive.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiced_bilabial_plosive.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Voiced_bilabial_plosive.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 2.071
+    },
+    {
+      "key": "t",
+      "ipa": "t",
+      "file_title": "File:Voiceless alveolar plosive.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiceless_alveolar_plosive.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/0/02/Voiceless_alveolar_plosive.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 1.94
+    },
+    {
+      "key": "d",
+      "ipa": "d",
+      "file_title": "File:Voiced alveolar plosive.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiced_alveolar_plosive.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/0/01/Voiced_alveolar_plosive.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 1.943
+    },
+    {
+      "key": "k",
+      "ipa": "k",
+      "file_title": "File:Voiceless velar plosive.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiceless_velar_plosive.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Voiceless_velar_plosive.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 2.001
+    },
+    {
+      "key": "g",
+      "ipa": "g",
+      "file_title": "File:Voiced velar plosive 02.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiced_velar_plosive_02.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/1/12/Voiced_velar_plosive_02.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 1.9
+    },
+    {
+      "key": "f",
+      "ipa": "f",
+      "file_title": "File:Voiceless labio-dental fricative.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiceless_labio-dental_fricative.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/c/c7/Voiceless_labio-dental_fricative.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Nixinova",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "duration_seconds": 1.897
+    },
+    {
+      "key": "v",
+      "ipa": "v",
+      "file_title": "File:Voiced labio-dental fricative.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiced_labio-dental_fricative.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/4/42/Voiced_labio-dental_fricative.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Nixinova",
+      "license": "CC0",
+      "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "duration_seconds": 1.737
+    },
+    {
+      "key": "θ",
+      "ipa": "θ",
+      "file_title": "File:Voiceless dental fricative.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiceless_dental_fricative.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/8/80/Voiceless_dental_fricative.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 2.277
+    },
+    {
+      "key": "ð",
+      "ipa": "ð",
+      "file_title": "File:Voiced dental fricative.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiced_dental_fricative.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Voiced_dental_fricative.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 2.214
+    },
+    {
+      "key": "s",
+      "ipa": "s",
+      "file_title": "File:Voiceless alveolar sibilant.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiceless_alveolar_sibilant.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Voiceless_alveolar_sibilant.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Peter Isotalo",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 2.216
+    },
+    {
+      "key": "z",
+      "ipa": "z",
+      "file_title": "File:Voiced alveolar sibilant.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiced_alveolar_sibilant.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/c/c0/Voiced_alveolar_sibilant.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 2.184
+    },
+    {
+      "key": "ʃ",
+      "ipa": "ʃ",
+      "file_title": "File:Voiceless palato-alveolar sibilant.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiceless_palato-alveolar_sibilant.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/c/cc/Voiceless_palato-alveolar_sibilant.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Peter Isotalo",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 2.205
+    },
+    {
+      "key": "ʒ",
+      "ipa": "ʒ",
+      "file_title": "File:Voiced palato-alveolar sibilant.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiced_palato-alveolar_sibilant.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/3/30/Voiced_palato-alveolar_sibilant.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Peter Isotalo",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 2.244
+    },
+    {
+      "key": "h",
+      "ipa": "h",
+      "file_title": "File:Voiceless glottal fricative.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiceless_glottal_fricative.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Voiceless_glottal_fricative.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 2.199
+    },
+    {
+      "key": "tʃ",
+      "ipa": "tʃ",
+      "file_title": "File:Voiceless palato-alveolar affricate.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiceless_palato-alveolar_affricate.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/9/97/Voiceless_palato-alveolar_affricate.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Peter Isotalo",
+      "license": "CC BY-SA 3.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+      "duration_seconds": 1.699
+    },
+    {
+      "key": "dʒ",
+      "ipa": "dʒ",
+      "file_title": "File:Voiced palato-alveolar affricate.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiced_palato-alveolar_affricate.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Voiced_palato-alveolar_affricate.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "The original uploader was Octane at English Wikipedia.",
+      "license": "Public domain",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 1.34
+    },
+    {
+      "key": "m",
+      "ipa": "m",
+      "file_title": "File:Bilabial nasal.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Bilabial_nasal.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Bilabial_nasal.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 2.03
+    },
+    {
+      "key": "n",
+      "ipa": "n",
+      "file_title": "File:Alveolar nasal.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Alveolar_nasal.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/2/29/Alveolar_nasal.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 2.3
+    },
+    {
+      "key": "ŋ",
+      "ipa": "ŋ",
+      "file_title": "File:Velar nasal.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Velar_nasal.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/3/39/Velar_nasal.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 1.926
+    },
+    {
+      "key": "l",
+      "ipa": "l",
+      "file_title": "File:Alveolar lateral approximant.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Alveolar_lateral_approximant.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Alveolar_lateral_approximant.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 2.186
+    },
+    {
+      "key": "ɹ",
+      "ipa": "ɹ",
+      "file_title": "File:Alveolar approximant.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Alveolar_approximant.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Alveolar_approximant.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Erutuon",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 1.961
+    },
+    {
+      "key": "j",
+      "ipa": "j",
+      "file_title": "File:Palatal approximant.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Palatal_approximant.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/e/e8/Palatal_approximant.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 2.103
+    },
+    {
+      "key": "w",
+      "ipa": "w",
+      "file_title": "File:Voiced labio-velar approximant.ogg",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Voiced_labio-velar_approximant.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Voiced_labio-velar_approximant.ogg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "artist": "Wikimedia Commons contributor",
+      "license": "CC BY-SA 3.0",
+      "license_url": "http://creativecommons.org/licenses/by-sa/3.0/",
+      "duration_seconds": 1.804
+    }
+  ]
+}

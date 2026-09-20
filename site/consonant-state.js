@@ -8,13 +8,52 @@ export const MANNERS = Object.freeze([
 ]);
 
 export function initialConsonantState() {
-  return { selected: 'p', compare: null, query: '', manner: 'all', place: 'all', voice: 'all', rate: 1 };
+  return { selected: 'p', compare: 'b', compareMode: true, compareTarget: 'b', query: '', manner: 'all', place: 'all', voice: 'all', rate: 1 };
 }
 
 export function reduceConsonants(state, action, rows) {
   const exists = key => rows.some(p => p.key === key);
   switch (action.type) {
-    case 'select': return exists(action.key) ? { ...state, selected: action.key, compare: state.compare === action.key ? null : state.compare } : state;
+    case 'select': {
+      if (!exists(action.key)) return state;
+      if (!state.compareMode) {
+        return { ...state, selected: action.key, compare: state.compare === action.key ? null : state.compare };
+      }
+      const target = state.compareTarget === 'a' ? 'a' : 'b';
+      if (action.key === state.selected) {
+        return { ...state, compareTarget: 'a' };
+      }
+      if (action.key === state.compare) {
+        return { ...state, compareTarget: 'b' };
+      }
+      if (target === 'a') {
+        if (action.key === state.compare) return state;
+        return { ...state, selected: action.key };
+      } else {
+        if (action.key === state.selected) return state;
+        return { ...state, compare: action.key };
+      }
+    }
+    case 'arm': return ['a', 'b'].includes(action.side) ? { ...state, compareTarget: action.side } : state;
+    case 'toggleCompare': {
+      const mode = action.value !== undefined ? Boolean(action.value) : !state.compareMode;
+      let compare = state.compare;
+      if (mode && !compare) {
+        const cur = rows.find(p => p.key === state.selected);
+        compare = cur?.counterpart || rows.find(p => p.key !== state.selected)?.key || null;
+      }
+      return { ...state, compareMode: mode, compare };
+    }
+    case 'swapCompare': {
+      if (!state.compare) return state;
+      return { ...state, selected: state.compare, compare: state.selected };
+    }
+    case 'setComparePair': {
+      if (exists(action.a) && exists(action.b) && action.a !== action.b) {
+        return { ...state, compareMode: true, selected: action.a, compare: action.b };
+      }
+      return state;
+    }
     case 'compare': return action.key === null || (exists(action.key) && action.key !== state.selected) ? { ...state, compare: action.key } : state;
     case 'filter': return ['query','manner','place','voice'].includes(action.field) ? { ...state, [action.field]: action.value } : state;
     case 'rate': return [0.75,1].includes(action.value) ? { ...state, rate: action.value } : state;
@@ -57,7 +96,19 @@ export function wordParts(p) {
   return [word.slice(0, start), word.slice(start, end), word.slice(end)];
 }
 
-export const modeFromHash = hash => hash === '#consonants' ? 'consonants' : 'vowels';
+// The hash carries the mode and, optionally, a sound or a pair to open in compare mode:
+//   #vowels            #consonants
+//   #vowels?a=æ        #consonants?a=ð&b=d
+// so another page (e.g. a pronunciation coach) can deep-link to "this sound vs that one".
+export const modeFromHash = hash => (hash || '').replace(/^#/, '').split('?')[0] === 'consonants' ? 'consonants' : 'vowels';
+export function pairFromHash(hash) {
+  const query = (hash || '').split('?')[1];
+  if (!query) return null;
+  const params = new URLSearchParams(query);
+  const a = params.get('a');
+  if (!a) return null;
+  return { a, b: params.get('b') || null };
+}
 export function modeForKey(mode, key) {
   if (key === 'Home') return 'vowels';
   if (key === 'End') return 'consonants';
