@@ -1,4 +1,6 @@
 import { armCompareSide, selectDiagramVowel } from './compare-state.js';
+import { initConsonants } from './consonants.js';
+import { isVowelShortcut } from './consonant-state.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -872,6 +874,22 @@ function audioUrlForWord(w) {
 }
 
 const audioCache = new Map();
+let vowelAudioGeneration = 0;
+const vowelEndedHandlers = new Map();
+
+function stopVowelAudio() {
+  vowelAudioGeneration++;
+  for (const clip of audioCache.values()) {
+    clip.pause();
+    clip.currentTime = 0;
+    const handler = vowelEndedHandlers.get(clip);
+    if (handler) clip.removeEventListener('ended', handler);
+  }
+  vowelEndedHandlers.clear();
+  state.activeAudio = null;
+  $$('#vowelsPanel .is-playing').forEach(btn => btn.classList.remove('is-playing'));
+  hideTooltip();
+}
 
 function getAudioClip(url) {
   let clip = audioCache.get(url);
@@ -910,6 +928,8 @@ function waitForReady(audioEl, timeoutMs = 1200) {
 }
 
 async function playUrl(url, targetBtn = null) {
+  if (document.body.dataset.mode !== 'vowels') return;
+  const generation = vowelAudioGeneration;
   const clip = getAudioClip(url);
 
   if (state.activeAudio && state.activeAudio !== clip) {
@@ -924,6 +944,7 @@ async function playUrl(url, targetBtn = null) {
   }
 
   await waitForReady(clip);
+  if (generation !== vowelAudioGeneration) return;
   clip.pause();
   clip.currentTime = 0;
   state.activeAudio = clip;
@@ -931,9 +952,11 @@ async function playUrl(url, targetBtn = null) {
   let repeatsLeft = state.loopCount - 1;
 
   const handleEnded = async () => {
+    if (generation !== vowelAudioGeneration) return;
     if (repeatsLeft > 0) {
       repeatsLeft--;
       await new Promise((r) => setTimeout(r, 320));
+      if (generation !== vowelAudioGeneration) return;
       clip.currentTime = 0;
       await clip.play();
     } else {
@@ -942,6 +965,9 @@ async function playUrl(url, targetBtn = null) {
     }
   };
 
+  const previousHandler = vowelEndedHandlers.get(clip);
+  if (previousHandler) clip.removeEventListener('ended', previousHandler);
+  vowelEndedHandlers.set(clip, handleEnded);
   clip.addEventListener('ended', handleEnded);
 
   try {
@@ -1154,13 +1180,16 @@ function renderCompareCard(root) {
 }
 
 async function playCompareSequence(pA, pB) {
+  const generation = vowelAudioGeneration;
   try {
     updateAnatomyVisuals(pA);
     await playPhoneme(pA);
     await new Promise((r) => setTimeout(r, 450));
+    if (generation !== vowelAudioGeneration) return;
     updateAnatomyVisuals(pB);
     await playPhoneme(pB);
     await new Promise((r) => setTimeout(r, 300));
+    if (generation !== vowelAudioGeneration) return;
     const activeP = state.byKey.get(state.selected);
     if (activeP) updateAnatomyVisuals(activeP);
   } catch (err) {
@@ -1512,7 +1541,8 @@ async function load() {
   $('#search').addEventListener('input', (e) => applySearch(e.target.value));
 
   window.addEventListener('keydown', (e) => {
-    if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'SELECT') return;
+    const target = document.activeElement;
+    if (!isVowelShortcut(document.body.dataset.mode, target?.tagName, target?.isContentEditable, e.defaultPrevented)) return;
 
     const keys = CHART_NODE_KEYS;
     const currIdx = keys.indexOf(state.selected);
@@ -1534,4 +1564,5 @@ function renderAll() {
   syncHighlights();
 }
 
+initConsonants({ onModeChange: stopVowelAudio });
 load();

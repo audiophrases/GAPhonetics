@@ -6,15 +6,16 @@
   <title>General American Phonetics — Interactive Charts & Vocal Tract Guide</title>
   <meta name="description" content="Interactive General American Phonetics charts with anatomical vocal tract cross-section, vowel quadrilateral, articulatory sensation guide, diphthong glide vectors, and audio playback." />
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./consonants.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
       <div class="brand__title">General American Phonetics</div>
-      <div class="brand__subtitle">Interactive vowel charts + anatomical vocal tract guide</div>
+      <div class="brand__subtitle">Vowels & consonants · Listen, explore, feel the difference</div>
     </div>
 
-    <div class="controls" aria-label="Controls">
+    <div id="vowelControls" class="controls" aria-label="Vowel controls">
       <label class="control searchBox">
         <span class="srOnly">Search phonemes</span>
         <svg class="searchIcon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -41,6 +42,12 @@
     </div>
   </header>
 
+  <div class="mode-tabs" role="tablist" aria-label="Explore sound families">
+    <button id="vowelsTab" type="button" role="tab" aria-controls="vowelsPanel" aria-selected="true" tabindex="0">Vowels</button>
+    <button id="consonantsTab" type="button" role="tab" aria-controls="consonantsPanel" aria-selected="false" tabindex="-1">Consonants <span>24 sounds</span></button>
+  </div>
+
+  <div id="vowelsPanel" role="tabpanel" aria-labelledby="vowelsTab">
   <!-- Filter chips bar -->
   <nav class="filterBar" aria-label="Category filters">
     <div class="filterBar__label">Filter:</div>
@@ -165,6 +172,12 @@
     <footer class="footer">
       <div>General American Phonetics Interactive Reference • Data editable in <code>data/phonemes.json</code> • Audio recordings in <code>audio/</code></div>
     </footer>
+  </main>
+  </div>
+
+  <main id="consonantsPanel" role="tabpanel" aria-labelledby="consonantsTab" hidden>
+    <div id="consonantsRoot"></div>
+    <footer class="c-footer">Listen to whole words, then practise the highlighted sound. <a href="./data/consonant-audio-sources.json">New human recording credits & licenses</a></footer>
   </main>
 
   <div class="tooltip" id="tooltip" role="tooltip" aria-hidden="true"></div>
